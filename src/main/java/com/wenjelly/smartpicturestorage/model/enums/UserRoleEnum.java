@@ -1,4 +1,4 @@
-package com.wenjelly.smartpicturestorage.model.model.enums;
+package com.wenjelly.smartpicturestorage.model.enums;
 
 import cn.hutool.core.util.ObjUtil;
 import lombok.Getter;

@@ -1,5 +1,6 @@
 package com.wenjelly.smartpicturestorage.exception;
 
+import com.wenjelly.smartpicturestorage.common.ErrorCode;
 import lombok.Getter;
 
 @Getter

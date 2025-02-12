@@ -1,5 +1,8 @@
 package com.wenjelly.smartpicturestorage.exception;
 
+import com.wenjelly.smartpicturestorage.common.BaseResponse;
+import com.wenjelly.smartpicturestorage.common.ErrorCode;
+import com.wenjelly.smartpicturestorage.common.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

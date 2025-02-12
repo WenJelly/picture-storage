@@ -1,4 +1,4 @@
-package com.wenjelly.smartpicturestorage.model.model.dto.user;
+package com.wenjelly.smartpicturestorage.model.dto.user;
 
 import lombok.Data;
 

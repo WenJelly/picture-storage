@@ -1,4 +1,4 @@
-package com.wenjelly.smartpicturestorage.model.model;
+package com.wenjelly.smartpicturestorage.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

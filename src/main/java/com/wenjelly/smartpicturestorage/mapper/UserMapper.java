@@ -2,7 +2,7 @@ package com.wenjelly.smartpicturestorage.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wenjelly.smartpicturestorage.model.model.User;
+import com.wenjelly.smartpicturestorage.model.User;
 
 /**
 * @author 14456

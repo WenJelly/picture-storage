@@ -1,3 +1,5 @@
+create database if not exists smart_picture_storage_wenjelly default character set utf8mb4 collate utf8mb4_unicode_ci;
+
 use smart_picture_storage_wenjelly;
 -- 用户表
 -- 扩展设计
