@@ -10,9 +10,10 @@ import java.util.Date;
 
 /**
  * 用户
+ *
  * @TableName user
  */
-@TableName(value ="user")
+@TableName(value = "user")
 @Data
 public class User {
     /**
@@ -110,21 +111,21 @@ public class User {
         }
         User other = (User) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getUserAccount() == null ? other.getUserAccount() == null : this.getUserAccount().equals(other.getUserAccount()))
-            && (this.getUserPassword() == null ? other.getUserPassword() == null : this.getUserPassword().equals(other.getUserPassword()))
-            && (this.getUserName() == null ? other.getUserName() == null : this.getUserName().equals(other.getUserName()))
-            && (this.getUserAvatar() == null ? other.getUserAvatar() == null : this.getUserAvatar().equals(other.getUserAvatar()))
-            && (this.getUserProfile() == null ? other.getUserProfile() == null : this.getUserProfile().equals(other.getUserProfile()))
-            && (this.getUserRole() == null ? other.getUserRole() == null : this.getUserRole().equals(other.getUserRole()))
-            && (this.getEditTime() == null ? other.getEditTime() == null : this.getEditTime().equals(other.getEditTime()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
-            && (this.getVipExpireTime() == null ? other.getVipExpireTime() == null : this.getVipExpireTime().equals(other.getVipExpireTime()))
-            && (this.getVipCode() == null ? other.getVipCode() == null : this.getVipCode().equals(other.getVipCode()))
-            && (this.getVipNumber() == null ? other.getVipNumber() == null : this.getVipNumber().equals(other.getVipNumber()))
-            && (this.getShareCode() == null ? other.getShareCode() == null : this.getShareCode().equals(other.getShareCode()))
-            && (this.getInviteUser() == null ? other.getInviteUser() == null : this.getInviteUser().equals(other.getInviteUser()))
-            && (this.getIsDelete() == null ? other.getIsDelete() == null : this.getIsDelete().equals(other.getIsDelete()));
+                && (this.getUserAccount() == null ? other.getUserAccount() == null : this.getUserAccount().equals(other.getUserAccount()))
+                && (this.getUserPassword() == null ? other.getUserPassword() == null : this.getUserPassword().equals(other.getUserPassword()))
+                && (this.getUserName() == null ? other.getUserName() == null : this.getUserName().equals(other.getUserName()))
+                && (this.getUserAvatar() == null ? other.getUserAvatar() == null : this.getUserAvatar().equals(other.getUserAvatar()))
+                && (this.getUserProfile() == null ? other.getUserProfile() == null : this.getUserProfile().equals(other.getUserProfile()))
+                && (this.getUserRole() == null ? other.getUserRole() == null : this.getUserRole().equals(other.getUserRole()))
+                && (this.getEditTime() == null ? other.getEditTime() == null : this.getEditTime().equals(other.getEditTime()))
+                && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
+                && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
+                && (this.getVipExpireTime() == null ? other.getVipExpireTime() == null : this.getVipExpireTime().equals(other.getVipExpireTime()))
+                && (this.getVipCode() == null ? other.getVipCode() == null : this.getVipCode().equals(other.getVipCode()))
+                && (this.getVipNumber() == null ? other.getVipNumber() == null : this.getVipNumber().equals(other.getVipNumber()))
+                && (this.getShareCode() == null ? other.getShareCode() == null : this.getShareCode().equals(other.getShareCode()))
+                && (this.getInviteUser() == null ? other.getInviteUser() == null : this.getInviteUser().equals(other.getInviteUser()))
+                && (this.getIsDelete() == null ? other.getIsDelete() == null : this.getIsDelete().equals(other.getIsDelete()));
     }
 
     @Override
@@ -152,27 +153,26 @@ public class User {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", userAccount=").append(userAccount);
-        sb.append(", userPassword=").append(userPassword);
-        sb.append(", userName=").append(userName);
-        sb.append(", userAvatar=").append(userAvatar);
-        sb.append(", userProfile=").append(userProfile);
-        sb.append(", userRole=").append(userRole);
-        sb.append(", editTime=").append(editTime);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", updateTime=").append(updateTime);
-        sb.append(", vipExpireTime=").append(vipExpireTime);
-        sb.append(", vipCode=").append(vipCode);
-        sb.append(", vipNumber=").append(vipNumber);
-        sb.append(", shareCode=").append(shareCode);
-        sb.append(", inviteUser=").append(inviteUser);
-        sb.append(", isDelete=").append(isDelete);
-        sb.append("]");
-        return sb.toString();
+        String sb = getClass().getSimpleName() +
+                " [" +
+                "Hash = " + hashCode() +
+                ", id=" + id +
+                ", userAccount=" + userAccount +
+                ", userPassword=" + userPassword +
+                ", userName=" + userName +
+                ", userAvatar=" + userAvatar +
+                ", userProfile=" + userProfile +
+                ", userRole=" + userRole +
+                ", editTime=" + editTime +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", vipExpireTime=" + vipExpireTime +
+                ", vipCode=" + vipCode +
+                ", vipNumber=" + vipNumber +
+                ", shareCode=" + shareCode +
+                ", inviteUser=" + inviteUser +
+                ", isDelete=" + isDelete +
+                "]";
+        return sb;
     }
 }

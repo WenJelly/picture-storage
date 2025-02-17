@@ -192,6 +192,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return queryWrapper;
     }
 
+    @Override
+    public boolean isAdmin(User user) {
+        return user != null && UserRoleEnum.ADMIN.getValue().equals(user.getUserRole());
+    }
 
     /**
      * 用于对密码进行加密
@@ -204,6 +208,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         final String SALT = "wenjelly";
         return DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
     }
+
 
 }
 

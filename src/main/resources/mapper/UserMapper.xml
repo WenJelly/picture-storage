@@ -5,26 +5,27 @@
 <mapper namespace="com.wenjelly.smartpicturestorage.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="com.wenjelly.smartpicturestorage.model.User">
-            <id property="id" column="id" />
-            <result property="userAccount" column="userAccount" />
-            <result property="userPassword" column="userPassword" />
-            <result property="userName" column="userName" />
-            <result property="userAvatar" column="userAvatar" />
-            <result property="userProfile" column="userProfile" />
-            <result property="userRole" column="userRole" />
-            <result property="editTime" column="editTime" />
-            <result property="createTime" column="createTime" />
-            <result property="updateTime" column="updateTime" />
-            <result property="vipExpireTime" column="vipExpireTime" />
-            <result property="vipCode" column="vipCode" />
-            <result property="vipNumber" column="vipNumber" />
-            <result property="shareCode" column="shareCode" />
-            <result property="inviteUser" column="inviteUser" />
-            <result property="isDelete" column="isDelete" />
+        <id property="id" column="id"/>
+        <result property="userAccount" column="userAccount"/>
+        <result property="userPassword" column="userPassword"/>
+        <result property="userName" column="userName"/>
+        <result property="userAvatar" column="userAvatar"/>
+        <result property="userProfile" column="userProfile"/>
+        <result property="userRole" column="userRole"/>
+        <result property="editTime" column="editTime"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="vipExpireTime" column="vipExpireTime"/>
+        <result property="vipCode" column="vipCode"/>
+        <result property="vipNumber" column="vipNumber"/>
+        <result property="shareCode" column="shareCode"/>
+        <result property="inviteUser" column="inviteUser"/>
+        <result property="isDelete" column="isDelete"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,userAccount,userPassword,userName,userAvatar,userProfile,
+        id
+        ,userAccount,userPassword,userName,userAvatar,userProfile,
         userRole,editTime,createTime,updateTime,vipExpireTime,
         vipCode,vipNumber,shareCode,inviteUser,isDelete
     </sql>

@@ -29,6 +29,7 @@ public class UserController {
 
     /**
      * 用户注册
+     *
      * @param userRegisterRequest 用户注册请求
      * @return 新用户 id
      */
@@ -152,8 +153,6 @@ public class UserController {
         userVOPage.setRecords(userVOList);
         return ResultUtils.success(userVOPage);
     }
-
-
 
 
 }
