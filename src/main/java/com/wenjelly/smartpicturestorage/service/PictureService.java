@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.wenjelly.smartpicturestorage.model.Picture;
 import com.wenjelly.smartpicturestorage.model.User;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureQueryRequest;
+import com.wenjelly.smartpicturestorage.model.dto.picture.PictureReviewRequest;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureUploadRequest;
 import com.wenjelly.smartpicturestorage.model.vo.PictureVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,5 +65,22 @@ public interface PictureService extends IService<Picture> {
      * @param picture 图片
      */
     void validPicture(Picture picture);
+
+    /**
+     * 图片审核
+     *
+     * @param pictureReviewRequest
+     * @param loginUser
+     */
+    void doPictureReview(PictureReviewRequest pictureReviewRequest, User loginUser);
+
+    /**
+     * 填充审核参数
+     *
+     * @param picture   图片
+     * @param loginUser 登录用户
+     */
+    void fillReviewParams(Picture picture, User loginUser);
+
 
 }

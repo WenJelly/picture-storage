@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wenjelly</groupId>
-    <artifactId>smart-picture-storage-wenjelly</artifactId>
+    <artifactId>picture-storage</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>smart-picture-storage-wenjelly</name>
-    <description>smart-picture-storage-wenjelly</description>
+    <name>picture-storage</name>
+    <description>picture-storage</description>
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
