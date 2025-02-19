@@ -10,6 +10,9 @@ import com.wenjelly.smartpicturestorage.common.ErrorCode;
 import com.wenjelly.smartpicturestorage.exception.BusinessException;
 import com.wenjelly.smartpicturestorage.exception.ThrowUtils;
 import com.wenjelly.smartpicturestorage.manager.FileManager;
+import com.wenjelly.smartpicturestorage.manager.upload.FilePictureUpload;
+import com.wenjelly.smartpicturestorage.manager.upload.PictureUploadTemplate;
+import com.wenjelly.smartpicturestorage.manager.upload.UrlPictureUpload;
 import com.wenjelly.smartpicturestorage.mapper.PictureMapper;
 import com.wenjelly.smartpicturestorage.model.Picture;
 import com.wenjelly.smartpicturestorage.model.User;
@@ -45,14 +48,20 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         implements PictureService {
 
     @Resource
-    private FileManager fileManager;
+    private FilePictureUpload filePictureUpload;
+
+    @Resource
+    private UrlPictureUpload urlPictureUpload;
 
     @Resource
     private UserService userService;
 
     @Override
-    public PictureVO uploadPicture(MultipartFile multipartFile, PictureUploadRequest pictureUploadRequest, User loginUser) {
-        ThrowUtils.throwIf(loginUser == null, ErrorCode.NO_AUTH_ERROR);
+    public PictureVO uploadPicture(Object inputSource, PictureUploadRequest pictureUploadRequest, User loginUser) {
+
+        // todo 除了通过对象类型判断外，也可以通过传一个业务参数（如 type）来区分不同的上传方式。
+        ThrowUtils.throwIf(loginUser == null, ErrorCode.NO_AUTH_ERROR,"用户未登录");
+        ThrowUtils.throwIf(inputSource == null, ErrorCode.PARAMS_ERROR,"图片为空");
         // 用于判断是新增还是更新图片
         Long pictureId = null;
         if (pictureUploadRequest != null) {
@@ -68,10 +77,16 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
             }
         }
+
         // 上传图片，得到信息
         // 按照用户 id 划分目录
         String uploadPathPrefix = String.format("public/%s", loginUser.getId());
-        UploadPictureResult uploadPictureResult = fileManager.uploadPicture(multipartFile, uploadPathPrefix);
+        // 根据 inputSource 类型，调用不同的上传方法
+        PictureUploadTemplate pictureUploadTemplate = filePictureUpload;
+        if(inputSource instanceof String) {
+            pictureUploadTemplate = urlPictureUpload;
+        }
+        UploadPictureResult uploadPictureResult = pictureUploadTemplate.uploadPicture(inputSource, uploadPathPrefix);
         // 构造要入库的图片信息
         Picture picture = new Picture();
         picture.setUrl(uploadPictureResult.getUrl());
