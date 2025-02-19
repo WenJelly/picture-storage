@@ -14,6 +14,13 @@ spring:
     url: jdbc:mysql://119.23.145.218:3306/smart_picture_storage_wenjelly
     username: root
     password: root
+  # redis配置
+  redis:
+    database: 0
+    host: /
+    port: 6379
+    timeout: 5000
+
 
 mybatis-plus:
   configuration:
