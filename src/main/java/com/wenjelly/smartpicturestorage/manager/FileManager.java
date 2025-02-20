@@ -32,8 +32,10 @@ import java.util.List;
 /**
  * 图片上传服务，用于上传图片到腾讯云对象存储，暴露给外面的接口
  */
+
 /**
  * 文件服务
+ *
  * @deprecated 已废弃，改为使用 upload 包的模板方法优化
  */
 @Deprecated
@@ -50,7 +52,8 @@ public class FileManager {
 
     /**
      * 上传图片
-     * @param multipartFile 图片文件
+     *
+     * @param multipartFile    图片文件
      * @param uploadPathPrefix 上传路径前缀
      * @return 上传结果
      */
@@ -96,11 +99,12 @@ public class FileManager {
 
     /**
      * 通过url上传图片
-     * @param fileUrl 图片url
+     *
+     * @param fileUrl          图片url
      * @param uploadPathPrefix 上传路径前缀
      * @return 上传结果
      */
-    public UploadPictureResult uploadPictureByUrl(String fileUrl,String uploadPathPrefix) {
+    public UploadPictureResult uploadPictureByUrl(String fileUrl, String uploadPathPrefix) {
         // 校验图片
         validPicture(fileUrl);
         // 图片上传地址
@@ -134,13 +138,14 @@ public class FileManager {
         } catch (IOException e) {
             log.error("下载图片失败", e);
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "上传图片失败");
-        }finally {
+        } finally {
             this.deleteTempFile(file);
         }
     }
 
     /**
      * 校验通过 URL 下载的图片
+     *
      * @param fileUrl 图片url
      */
     public void validPicture(String fileUrl) {
@@ -151,7 +156,7 @@ public class FileManager {
          */
         ThrowUtils.throwIf(fileUrl == null, ErrorCode.PARAMS_ERROR, "文件不能为空");
 
-        try{
+        try {
             // 1.验证 URL 格式
             new URL(fileUrl);
         } catch (MalformedURLException e) {
@@ -165,14 +170,14 @@ public class FileManager {
         HttpResponse response = null;
 
         try {
-            response = HttpUtil.createRequest(Method.HEAD,fileUrl).execute();
+            response = HttpUtil.createRequest(Method.HEAD, fileUrl).execute();
             // 未正常返回，无需执行其他判断
-            if(response.getStatus() != HttpStatus.HTTP_OK) {
-                return ;
+            if (response.getStatus() != HttpStatus.HTTP_OK) {
+                return;
             }
             // 4.校验文件类型
             String contentType = response.header("Content-Type");
-            if(StrUtil.isNotBlank(contentType)) {
+            if (StrUtil.isNotBlank(contentType)) {
                 // 允许的图片类型
                 final List<String> ALLOW_CONTENT_TYPES = Arrays.asList("image/jpeg", "image/jpg", "image/png", "image/gif", "image/bmp", "image/webp");
                 ThrowUtils.throwIf(!ALLOW_CONTENT_TYPES.contains(contentType.toLowerCase()),
@@ -181,16 +186,16 @@ public class FileManager {
 
             // 5.校验文件大小
             String contentLengthStr = response.header("Content-Length");
-            if(StrUtil.isNotBlank(contentLengthStr)) {
-                try{
+            if (StrUtil.isNotBlank(contentLengthStr)) {
+                try {
                     long contentLength = Long.parseLong(contentLengthStr);
                     final long ONE_M = 1024 * 1024L;
                     ThrowUtils.throwIf(contentLength > 10 * ONE_M, ErrorCode.PARAMS_ERROR, "文件大小不能超过10M");
-                }catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     throw new BusinessException(ErrorCode.PARAMS_ERROR, "文件大小格式错误");
-                    }
+                }
             }
-        }finally {
+        } finally {
             if (response != null) {
                 response.close();
             }
@@ -214,7 +219,6 @@ public class FileManager {
         final List<String> ALLOW_FORMAT_LIST = Arrays.asList("jpg", "jpeg", "png", "gif", "bmp", "webp");
         ThrowUtils.throwIf(!ALLOW_FORMAT_LIST.contains(fileSuffix), ErrorCode.PARAMS_ERROR, "文件格式不支持");
     }
-
 
 
     public void deleteTempFile(File file) {

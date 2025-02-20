@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wenjelly.smartpicturestorage.common.ErrorCode;
 import com.wenjelly.smartpicturestorage.exception.BusinessException;
 import com.wenjelly.smartpicturestorage.exception.ThrowUtils;
-import com.wenjelly.smartpicturestorage.manager.FileManager;
 import com.wenjelly.smartpicturestorage.manager.upload.FilePictureUpload;
 import com.wenjelly.smartpicturestorage.manager.upload.PictureUploadTemplate;
 import com.wenjelly.smartpicturestorage.manager.upload.UrlPictureUpload;
@@ -19,18 +18,24 @@ import com.wenjelly.smartpicturestorage.model.User;
 import com.wenjelly.smartpicturestorage.model.dto.file.UploadPictureResult;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureQueryRequest;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureReviewRequest;
+import com.wenjelly.smartpicturestorage.model.dto.picture.PictureUploadByBatchRequest;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureUploadRequest;
 import com.wenjelly.smartpicturestorage.model.enums.PictureReviewStatusEnum;
 import com.wenjelly.smartpicturestorage.model.vo.PictureVO;
 import com.wenjelly.smartpicturestorage.model.vo.UserVO;
 import com.wenjelly.smartpicturestorage.service.PictureService;
 import com.wenjelly.smartpicturestorage.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +49,7 @@ import java.util.stream.Collectors;
  * @createDate 2025-02-17 14:07:25
  */
 @Service
+@Slf4j
 public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         implements PictureService {
 
@@ -60,8 +66,8 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
     public PictureVO uploadPicture(Object inputSource, PictureUploadRequest pictureUploadRequest, User loginUser) {
 
         // todo 除了通过对象类型判断外，也可以通过传一个业务参数（如 type）来区分不同的上传方式。
-        ThrowUtils.throwIf(loginUser == null, ErrorCode.NO_AUTH_ERROR,"用户未登录");
-        ThrowUtils.throwIf(inputSource == null, ErrorCode.PARAMS_ERROR,"图片为空");
+        ThrowUtils.throwIf(loginUser == null, ErrorCode.NO_AUTH_ERROR, "用户未登录");
+        ThrowUtils.throwIf(inputSource == null, ErrorCode.PARAMS_ERROR, "图片为空");
         // 用于判断是新增还是更新图片
         Long pictureId = null;
         if (pictureUploadRequest != null) {
@@ -83,7 +89,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         String uploadPathPrefix = String.format("public/%s", loginUser.getId());
         // 根据 inputSource 类型，调用不同的上传方法
         PictureUploadTemplate pictureUploadTemplate = filePictureUpload;
-        if(inputSource instanceof String) {
+        if (inputSource instanceof String) {
             pictureUploadTemplate = urlPictureUpload;
         }
         UploadPictureResult uploadPictureResult = pictureUploadTemplate.uploadPicture(inputSource, uploadPathPrefix);
@@ -268,6 +274,67 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             // 非管理员，创建或编辑都要改为待审核
             picture.setReviewStatus(PictureReviewStatusEnum.REVIEWING.getValue());
         }
+    }
+
+    @Override
+    public Integer uploadPictureByBatch(PictureUploadByBatchRequest pictureUploadByBatchRequest, User loginUser) {
+        // 如果抓取的内容数量较多，可以适当地 Thread.sleep 阻塞等待一段时间，减少服务器被封禁的概率。
+
+        // 获取搜索词
+        String searchText = pictureUploadByBatchRequest.getSearchText();
+        // 获取抓取数量
+        Integer count = pictureUploadByBatchRequest.getCount();
+
+        ThrowUtils.throwIf(count > 30, ErrorCode.PARAMS_ERROR, "抓取数量不能超过 30 条");
+
+        // 抓取地址（可以去百度/Bing等抓取，这里通过bing进行抓取）
+        String fetchUrl = String.format("https://cn.bing.com/images/async?q=%s&mmasync=1", searchText);
+        Document document;
+        try {
+            document = Jsoup.connect(fetchUrl).get();
+        } catch (IOException e) {
+            log.error("抓取图片失败", e);
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "抓取图片失败");
+        }
+        Element div = document.getElementsByClass("dgControl").first();
+
+        if (ObjUtil.isNull(div)) {
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "获取元素失败");
+        }
+
+        Elements imgElementList = div.select("img.ming");
+
+        // 完成上传的数量
+        int uploadCount = 0;
+        for (Element imgElement : imgElementList) {
+            String fileUrl = imgElement.attr("src");
+            if (StrUtil.isBlank(fileUrl)) {
+                log.info("当前链接为空，已跳过: {}", fileUrl);
+                continue;
+            }
+
+            // 对图片上传地址进行处理，防止出现转移问题
+            int questionMarkIndex = fileUrl.indexOf("?");
+            if (questionMarkIndex > -1) {
+                fileUrl = fileUrl.substring(0, questionMarkIndex);
+            }
+
+            // 上传图片
+            PictureUploadRequest pictureUploadRequest = new PictureUploadRequest();
+            try {
+                PictureVO pictureVO = this.uploadPicture(fileUrl, pictureUploadRequest, loginUser);
+                log.info("图片上传成功,id = {}", pictureVO.getId());
+                uploadCount++;
+            } catch (Exception e) {
+                log.error("图片上传失败", e);
+                continue;
+            }
+
+            if (uploadCount >= count) {
+                break;
+            }
+        }
+        return uploadCount;
     }
 
 

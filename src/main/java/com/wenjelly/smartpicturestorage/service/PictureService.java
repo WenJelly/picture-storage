@@ -8,9 +8,9 @@ import com.wenjelly.smartpicturestorage.model.Picture;
 import com.wenjelly.smartpicturestorage.model.User;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureQueryRequest;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureReviewRequest;
+import com.wenjelly.smartpicturestorage.model.dto.picture.PictureUploadByBatchRequest;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureUploadRequest;
 import com.wenjelly.smartpicturestorage.model.vo.PictureVO;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +24,7 @@ public interface PictureService extends IService<Picture> {
     /**
      * 上传图片
      *
-     * @param inputSource        图片文件/URL
+     * @param inputSource          图片文件/URL
      * @param pictureUploadRequest 图片上传请求
      * @param loginUser            登录用户
      * @return 图片信息
@@ -67,8 +67,8 @@ public interface PictureService extends IService<Picture> {
     /**
      * 图片审核
      *
-     * @param pictureReviewRequest
-     * @param loginUser
+     * @param pictureReviewRequest 图片审核请求
+     * @param loginUser            登录用户
      */
     void doPictureReview(PictureReviewRequest pictureReviewRequest, User loginUser);
 
@@ -79,6 +79,15 @@ public interface PictureService extends IService<Picture> {
      * @param loginUser 登录用户
      */
     void fillReviewParams(Picture picture, User loginUser);
+
+    /**
+     * 批量抓取和创建图片
+     *
+     * @param pictureUploadByBatchRequest 图片批量抓取请求（在网页中抓取）
+     * @param loginUser                   登录用户
+     * @return 图片数量
+     */
+    Integer uploadPictureByBatch(PictureUploadByBatchRequest pictureUploadByBatchRequest, User loginUser);
 
 
 }

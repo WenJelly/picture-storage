@@ -39,22 +39,18 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/picture")
 public class PictureController {
 
-    @Resource
-    private UserService userService;
-
-    @Resource
-    private PictureService pictureService;
-
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
-
     private final Cache<String, String> LOCAL_CACHE =
             Caffeine.newBuilder().initialCapacity(1024)
                     .maximumSize(10000L)
                     // 缓存 5 分钟移除
                     .expireAfterWrite(5L, TimeUnit.MINUTES)
                     .build();
-
+    @Resource
+    private UserService userService;
+    @Resource
+    private PictureService pictureService;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 上传图片
@@ -77,8 +73,9 @@ public class PictureController {
 
     /**
      * 通过 URL 上传图片（可重新上传）
+     *
      * @param pictureUploadRequest 图片上传请求
-     * @param request 请求
+     * @param request              请求
      * @return 图片信息
      */
     @PostMapping("/upload/url")
@@ -260,8 +257,9 @@ public class PictureController {
 
     /**
      * 通过缓存来查询分页内容
+     *
      * @param pictureQueryRequest 查询请求
-     * @param request 请求
+     * @param request             请求
      * @return 分页结果
      */
     @PostMapping("/list/page/vo/cache")
@@ -282,7 +280,7 @@ public class PictureController {
 
         // 1. 从本地缓存中查询
         String cachedValue = LOCAL_CACHE.getIfPresent(cacheKey);
-        if(cachedValue != null) {
+        if (cachedValue != null) {
             // 如果缓存命中，则返回
             Page<PictureVO> cachePage = JSONUtil.toBean(cachedValue, Page.class);
             return ResultUtils.success(cachePage);
@@ -290,9 +288,9 @@ public class PictureController {
         // 2. 从分布式缓存中查询（Redis）
         ValueOperations<String, String> valueOps = stringRedisTemplate.opsForValue();
         cachedValue = valueOps.get(cacheKey);
-        if(cachedValue!= null) {
+        if (cachedValue != null) {
             // 如果命中了Redis缓存，则先加入到本地缓存
-            LOCAL_CACHE.put(cacheKey,cachedValue);
+            LOCAL_CACHE.put(cacheKey, cachedValue);
             Page<PictureVO> cachedPage = JSONUtil.toBean(cachedValue, Page.class);
             return ResultUtils.success(cachedPage);
         }
@@ -308,7 +306,7 @@ public class PictureController {
         // 更新本地缓存
         LOCAL_CACHE.put(cacheKey, cacheValue);
         // 更新Redis缓存 设置过期时间 5 - 10分钟随机，防止雪崩
-        int cacheExpire = 300 + RandomUtil.randomInt(0,300);
+        int cacheExpire = 300 + RandomUtil.randomInt(0, 300);
         valueOps.set(cacheKey, cacheValue, cacheExpire, TimeUnit.SECONDS);
 
         // 返回结果
@@ -329,5 +327,15 @@ public class PictureController {
          */
     }
 
+    @PostMapping("/upload/batch")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Integer> uploadPictureByBatch(
+            @RequestBody PictureUploadByBatchRequest pictureUploadByBatchRequest,
+            HttpServletRequest request) {
+        ThrowUtils.throwIf(pictureUploadByBatchRequest == null, ErrorCode.PARAMS_ERROR);
+        User loginUser = userService.getLoginUser(request);
+        Integer uploadCount = pictureService.uploadPictureByBatch(pictureUploadByBatchRequest, loginUser);
+        return ResultUtils.success(uploadCount);
+    }
 
 }

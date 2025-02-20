@@ -9,6 +9,12 @@ import java.util.List;
 public class PictureUpdateRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 图片名称
+     */
+    private String picName;
+
     /**
      * id
      */
