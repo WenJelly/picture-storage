@@ -1,11 +1,14 @@
 package com.wenjelly.smartpicturestorage.manager.upload;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.model.ciModel.persistence.CIObject;
 import com.qcloud.cos.model.ciModel.persistence.ImageInfo;
+import com.qcloud.cos.model.ciModel.persistence.ProcessResults;
 import com.wenjelly.smartpicturestorage.common.ErrorCode;
 import com.wenjelly.smartpicturestorage.config.CosClientConfig;
 import com.wenjelly.smartpicturestorage.exception.BusinessException;
@@ -16,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 public abstract class PictureUploadTemplate {
@@ -30,6 +34,13 @@ public abstract class PictureUploadTemplate {
      * 模板方法，定义上传流程
      */
     public final UploadPictureResult uploadPicture(Object inputSource, String uploadPathPrefix) {
+        /*
+         * todo 扩展
+         * 1）增加对原图的处理
+         * 目前每次上传图片实际上会保存原图和压缩图 2 个图片，原图占用的空间还是比较大的。如果想进一步优化，可以删除原图，只保留缩略图；或者在数据库中保存原图的地址，用作备份。
+         * 2）尝试更大比例的压缩，比如使用 质量变换 来处理图片。
+         * 其他扩展知识：文件秒传、分片上传、断点续传等。
+         */
         // 1. 校验图片
         validPicture(inputSource);
 
@@ -50,7 +61,13 @@ public abstract class PictureUploadTemplate {
             // 4. 上传图片到对象存储
             PutObjectResult putObjectResult = cosManager.putPictureObject(uploadPath, file);
             ImageInfo imageInfo = putObjectResult.getCiUploadResult().getOriginalInfo().getImageInfo();
-
+            ProcessResults processResults = putObjectResult.getCiUploadResult().getProcessResults();
+            List<CIObject> objectList = processResults.getObjectList();
+            if (CollUtil.isNotEmpty(objectList)) {
+                CIObject compressedCiObject = objectList.get(0);
+                // 封装压缩图返回结果
+                return buildResult(originFilename, compressedCiObject);
+            }
             // 5. 封装返回结果
             return buildResult(originFilename, file, uploadPath, imageInfo);
         } catch (Exception e) {
@@ -94,6 +111,29 @@ public abstract class PictureUploadTemplate {
         uploadPictureResult.setUrl(cosClientConfig.getHost() + "/" + uploadPath);
         return uploadPictureResult;
     }
+
+    /**
+     * 封装返回结果（压缩后）
+     * @param originFilename 原始文件名
+     * @param compressedCiObject 压缩后的对象
+     * @return 上传结果
+     */
+    private UploadPictureResult buildResult(String originFilename, CIObject compressedCiObject) {
+        UploadPictureResult uploadPictureResult = new UploadPictureResult();
+        int picWidth = compressedCiObject.getWidth();
+        int picHeight = compressedCiObject.getHeight();
+        double picScale = NumberUtil.round(picWidth * 1.0 / picHeight, 2).doubleValue();
+        uploadPictureResult.setPicName(FileUtil.mainName(originFilename));
+        uploadPictureResult.setPicWidth(picWidth);
+        uploadPictureResult.setPicHeight(picHeight);
+        uploadPictureResult.setPicScale(picScale);
+        uploadPictureResult.setPicFormat(compressedCiObject.getFormat());
+        uploadPictureResult.setPicSize(compressedCiObject.getSize().longValue());
+        // 设置图片为压缩后的地址
+        uploadPictureResult.setUrl(cosClientConfig.getHost() + "/" + compressedCiObject.getKey());
+        return uploadPictureResult;
+    }
+
 
     /**
      * 删除临时文件
