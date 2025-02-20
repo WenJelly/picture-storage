@@ -96,6 +96,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         // 构造要入库的图片信息
         Picture picture = new Picture();
         picture.setUrl(uploadPictureResult.getUrl());
+        picture.setThumbnailUrl(uploadPictureResult.getThumbnailUrl());
         picture.setName(uploadPictureResult.getPicName());
         picture.setPicSize(uploadPictureResult.getPicSize());
         picture.setPicWidth(uploadPictureResult.getPicWidth());
@@ -174,7 +175,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         // 排序
         queryWrapper.orderBy(StrUtil.isNotEmpty(sortField), sortOrder.equals("ascend"), sortField);
         return queryWrapper;
-        /**
+        /*
          * 从 MySQL 5.7 开始，MySQL 提供了 JSON_CONTAINS 函数，可以用来检查一个 JSON 数组中是否包含某个元素：
          * SELECT * FROM picture WHERE JSON_CONTAINS(tags, 'wenjelly');
          */

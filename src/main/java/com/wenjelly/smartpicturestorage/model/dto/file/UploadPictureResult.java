@@ -40,5 +40,10 @@ public class UploadPictureResult {
      */
     private String picFormat;
 
+    /**
+     * 缩略图
+     */
+    private String thumbnailUrl;
+
 }
 

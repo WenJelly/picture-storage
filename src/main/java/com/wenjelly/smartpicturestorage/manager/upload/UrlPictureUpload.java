@@ -23,7 +23,7 @@ public class UrlPictureUpload extends PictureUploadTemplate {
     protected void validPicture(Object inputSource) {
         String fileUrl = (String) inputSource;
         ThrowUtils.throwIf(StrUtil.isBlank(fileUrl), ErrorCode.PARAMS_ERROR, "文件地址不能为空");
-        /**
+        /*
          * 注意 2 点：
          * 注意发送 HTTP 请求后，需要即时释放资源
          * 有些 URL 地址可能不支持通过 HEAD 请求访问，为了提高导入成功率，即使 HEAD 请求访问失败，也不会报错，并且不用执行后续的校验。仅对能获取到的信息进行校验。
@@ -36,7 +36,8 @@ public class UrlPictureUpload extends PictureUploadTemplate {
         }
 
         // 2.校验 URL 协议
-        ThrowUtils.throwIf(fileUrl.startsWith("http://") || fileUrl.startsWith("https://"), ErrorCode.PARAMS_ERROR, "仅支持 HTTP 或 HTTPS 协议的文件地址");
+        ThrowUtils.throwIf(fileUrl.startsWith("http://")
+                || fileUrl.startsWith("https://"), ErrorCode.PARAMS_ERROR, "仅支持 HTTP 或 HTTPS 协议的文件地址");
 
         // 3.发送 HEAD 请求以验证文件是否存在
         HttpResponse response = null;
