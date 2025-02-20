@@ -30,11 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 图片上传服务，用于上传图片到腾讯云对象存储，暴露给外面的接口
- */
-
-/**
- * 文件服务
+ * 图片/文件上传服务，用于上传图片到腾讯云对象存储，暴露给外面的接口
  *
  * @deprecated 已废弃，改为使用 upload 包的模板方法优化
  */
@@ -48,7 +44,6 @@ public class FileManager {
 
     @Resource
     private CosManager cosManager;
-
 
     /**
      * 上传图片
@@ -149,7 +144,7 @@ public class FileManager {
      * @param fileUrl 图片url
      */
     public void validPicture(String fileUrl) {
-        /**
+        /*
          * 注意 2 点：
          * 注意发送 HTTP 请求后，需要即时释放资源
          * 有些 URL 地址可能不支持通过 HEAD 请求访问，为了提高导入成功率，即使 HEAD 请求访问失败，也不会报错，并且不用执行后续的校验。仅对能获取到的信息进行校验。

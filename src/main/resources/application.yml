@@ -28,7 +28,6 @@ spring:
     # session 30 天过期
     timeout: 2592000
 
-
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
@@ -52,7 +51,6 @@ knife4j:
         api-rule-resources:
           - com.wenjelly.smartpicturestorage.controller
 
-
 # 对象存储配置（需要从腾讯云获取）
 cos:
   client:
@@ -61,7 +59,3 @@ cos:
     secretKey: xxx
     region: xxx
     bucket: xxx
-
-
-
-

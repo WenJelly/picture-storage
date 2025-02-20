@@ -15,6 +15,7 @@ import com.wenjelly.smartpicturestorage.manager.upload.PictureUploadTemplate;
 import com.wenjelly.smartpicturestorage.manager.upload.UrlPictureUpload;
 import com.wenjelly.smartpicturestorage.mapper.PictureMapper;
 import com.wenjelly.smartpicturestorage.model.Picture;
+import com.wenjelly.smartpicturestorage.model.Space;
 import com.wenjelly.smartpicturestorage.model.User;
 import com.wenjelly.smartpicturestorage.model.dto.file.UploadPictureResult;
 import com.wenjelly.smartpicturestorage.model.dto.picture.PictureQueryRequest;
@@ -25,6 +26,7 @@ import com.wenjelly.smartpicturestorage.model.enums.PictureReviewStatusEnum;
 import com.wenjelly.smartpicturestorage.model.vo.PictureVO;
 import com.wenjelly.smartpicturestorage.model.vo.UserVO;
 import com.wenjelly.smartpicturestorage.service.PictureService;
+import com.wenjelly.smartpicturestorage.service.SpaceService;
 import com.wenjelly.smartpicturestorage.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -67,6 +69,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
     @Resource
     private CosManager cosManager;
 
+    @Resource
+    private SpaceService spaceService;
+
     @Override
     public PictureVO uploadPicture(Object inputSource, PictureUploadRequest pictureUploadRequest, User loginUser) {
 
@@ -75,8 +80,21 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         ThrowUtils.throwIf(inputSource == null, ErrorCode.PARAMS_ERROR, "图片为空");
         // 用于判断是新增还是更新图片
         Long pictureId = null;
+        Long spaceId = null;
         if (pictureUploadRequest != null) {
             pictureId = pictureUploadRequest.getId();
+            spaceId = pictureUploadRequest.getSpaceId();
+        }
+
+        // 先校验空间是否存在
+        if (spaceId != null) {
+            // 说明是上传到用户的空间
+            Space space = spaceService.getById(spaceId);
+            ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR, "空间不存在");
+            // 必须空间拥有者才能上传
+            if (!loginUser.getId().equals(space.getUserId())) {
+                ThrowUtils.throwIf(!userService.isAdmin(loginUser), ErrorCode.NO_AUTH_ERROR, "无空间权限上传");
+            }
         }
 
         // 如果是更新图片，需要校验图片是否存在
@@ -87,11 +105,27 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             if (!oldPicture.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
             }
+            // 校验空间是否一致
+            // 没传 spaceId，则复用原有图片的 spaceId
+            if (spaceId == null) {
+                if (oldPicture.getSpaceId() != null) {
+                    spaceId = oldPicture.getSpaceId();
+                }
+            } else {
+                // 传了 spaceId，校验是否一致
+                if (!spaceId.equals(oldPicture.getSpaceId())) {
+                    throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "空间 id 不一致");
+                }
+            }
         }
-
         // 上传图片，得到信息
-        // 按照用户 id 划分目录
-        String uploadPathPrefix = String.format("public/%s", loginUser.getId());
+        // 按照用户 id 划分目录 =》 按照空间划分目录
+        String uploadPathPrefix;
+        if (spaceId == null) {
+            uploadPathPrefix = String.format("public/%s", loginUser.getId());
+        } else {
+            uploadPathPrefix = String.format("space/%s", spaceId);
+        }
         // 根据 inputSource 类型，调用不同的上传方法
         PictureUploadTemplate pictureUploadTemplate = filePictureUpload;
         if (inputSource instanceof String) {
@@ -109,6 +143,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         picture.setPicScale(uploadPictureResult.getPicScale());
         picture.setPicFormat(uploadPictureResult.getPicFormat());
         picture.setUserId(loginUser.getId());
+        picture.setSpaceId(spaceId);
         // 补充审核参数
         fillReviewParams(picture, loginUser);
         // 如果 pictureId 不为空，表示更新，否则是新增
@@ -350,7 +385,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         String pictureUrl = oldPicture.getUrl();
         Long count = this.lambdaQuery().eq(Picture::getUrl, pictureUrl).count();
         // 有不止一条记录用到了该图片地址，则不清理
-        if(count>1) {
+        if (count > 1) {
             return;
         }
         // FIXME 注意，这里的 url 包含了域名，实际上只要传 key 值（存储路径）就够了

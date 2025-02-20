@@ -86,6 +86,7 @@ public class CosManager {
 
     /**
      * 删除对象
+     *
      * @param key 唯一键 删除的路径
      * @throws CosClientException 异常
      */
