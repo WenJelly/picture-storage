@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wenjelly.smartpicturestorage.model.Picture;
 import com.wenjelly.smartpicturestorage.model.User;
-import com.wenjelly.smartpicturestorage.model.dto.picture.PictureQueryRequest;
-import com.wenjelly.smartpicturestorage.model.dto.picture.PictureReviewRequest;
-import com.wenjelly.smartpicturestorage.model.dto.picture.PictureUploadByBatchRequest;
-import com.wenjelly.smartpicturestorage.model.dto.picture.PictureUploadRequest;
+import com.wenjelly.smartpicturestorage.model.dto.picture.*;
 import com.wenjelly.smartpicturestorage.model.vo.PictureVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -109,6 +106,13 @@ public interface PictureService extends IService<Picture> {
      * @param loginUser 登录用户
      */
     void deletePicture(long pictureId, User loginUser);
+
+    /**
+     * 编辑图片
+     * @param pictureEditRequest 图片编辑请求
+     * @param loginUser 登录用户
+     */
+    void editPicture(PictureEditRequest pictureEditRequest, User loginUser);
 
 
 }
