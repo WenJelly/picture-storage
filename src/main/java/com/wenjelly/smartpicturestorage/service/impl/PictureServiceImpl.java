@@ -36,6 +36,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +73,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
     @Resource
     private SpaceService spaceService;
 
+    @Resource
+    private TransactionTemplate transactionTemplate;
+
     @Override
     public PictureVO uploadPicture(Object inputSource, PictureUploadRequest pictureUploadRequest, User loginUser) {
 
@@ -94,6 +98,15 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             // 必须空间拥有者才能上传
             if (!loginUser.getId().equals(space.getUserId())) {
                 ThrowUtils.throwIf(!userService.isAdmin(loginUser), ErrorCode.NO_AUTH_ERROR, "无空间权限上传");
+            }
+
+            // 校验额度
+            if (space.getTotalCount() >= space.getMaxCount()) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "空间图片数量已达上限");
+            }
+
+            if (space.getTotalSize() >= space.getMaxSize()) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "空间图片大小已达上限");
             }
         }
 
@@ -152,6 +165,20 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             picture.setId(pictureId);
             picture.setEditTime(new Date());
         }
+        Long finalSpaceId = spaceId;
+        transactionTemplate.execute(status -> {
+            boolean result = this.saveOrUpdate(picture);
+            ThrowUtils.throwIf(!result,ErrorCode.OPERATION_ERROR,"图片上传失败");
+            if(finalSpaceId != null) {
+                boolean update = spaceService.lambdaUpdate()
+                        .eq(Space::getId, finalSpaceId)
+                        .setSql("totalSize = totalSize + " + picture.getPicSize())
+                        .setSql("totalCount = totalCount + 1")
+                        .update();
+                ThrowUtils.throwIf(!update,ErrorCode.OPERATION_ERROR,"额度更新失败“");
+            }
+            return picture;
+        });
         boolean result = this.saveOrUpdate(picture);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "图片上传失败");
         return PictureVO.objToVo(picture);
