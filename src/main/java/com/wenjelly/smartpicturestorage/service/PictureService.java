@@ -95,13 +95,15 @@ public interface PictureService extends IService<Picture> {
 
     /**
      * 校验空间权限
+     *
      * @param loginUser 登录用户
-     * @param picture 图片
+     * @param picture   图片
      */
     void checkPictureAuth(User loginUser, Picture picture);
 
     /**
      * 删除图片
+     *
      * @param pictureId 图片 id
      * @param loginUser 登录用户
      */
@@ -109,8 +111,9 @@ public interface PictureService extends IService<Picture> {
 
     /**
      * 编辑图片
+     *
      * @param pictureEditRequest 图片编辑请求
-     * @param loginUser 登录用户
+     * @param loginUser          登录用户
      */
     void editPicture(PictureEditRequest pictureEditRequest, User loginUser);
 
