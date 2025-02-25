@@ -23,6 +23,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/space")
 public class SpaceController {
+    /*
+    扩展 todo
+    1）删除空间时，关联删除空间内的图片
+    2）管理员创建空间：管理员可以为指定用户创建空间。可以在创建空间时多传一个 userId 参数，但是要注意做好权限控制，仅管理员可以为别人创建空间。
+    3）目前更新上传图片的逻辑还是存在一些问题的。比如更新图片时，并没有删除原有图片、也没有减少原有图片占用的空间和额度，可以通过事务中补充逻辑或者通过定时任务扫描删除。
+     */
 
     @Resource
     private SpaceService spaceService;

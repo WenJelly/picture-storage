@@ -43,6 +43,13 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 用户登录
+     *
+     * @param userLoginRequest 用户登录请求
+     * @param request          http请求
+     * @return 登录完成的用户脱敏信息
+     */
     @PostMapping("/login")
     public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(userLoginRequest == null, ErrorCode.PARAMS_ERROR);
@@ -52,6 +59,12 @@ public class UserController {
         return ResultUtils.success(loginUserVO);
     }
 
+    /**
+     * 用户登出
+     *
+     * @param request http请求
+     * @return 登出结果
+     */
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
         ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR);
@@ -60,6 +73,12 @@ public class UserController {
     }
 
 
+    /**
+     * 获取当前登录用户信息
+     *
+     * @param request http请求
+     * @return 当前登录用户的脱敏信息
+     */
     @GetMapping("/get/login")
     public BaseResponse<LoginUserVO> getLoginUser(HttpServletRequest request) {
         User user = userService.getLoginUser(request);
@@ -67,7 +86,10 @@ public class UserController {
     }
 
     /**
-     * 创建用户
+     * 管理员创建用户
+     *
+     * @param userAddRequest 创建用户请求
+     * @return 新用户id
      */
     @PostMapping("/add")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -85,7 +107,10 @@ public class UserController {
     }
 
     /**
-     * 根据 id 获取用户（仅管理员）
+     * 根据id获取用户（管理员），未脱敏
+     *
+     * @param id 需要查询的用户id
+     * @return 用户信息
      */
     @GetMapping("/get")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -97,7 +122,10 @@ public class UserController {
     }
 
     /**
-     * 根据 id 获取包装类
+     * 根据id获取用户脱敏信息
+     *
+     * @param id 用户id
+     * @return 脱敏后的用户信息
      */
     @GetMapping("/get/vo")
     public BaseResponse<UserVO> getUserVOById(long id) {
@@ -107,7 +135,10 @@ public class UserController {
     }
 
     /**
-     * 删除用户
+     * 删除用户（管理员功能）
+     *
+     * @param deleteRequest 删除请求
+     * @return 删除结果
      */
     @PostMapping("/delete")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -120,7 +151,10 @@ public class UserController {
     }
 
     /**
-     * 更新用户
+     * 更新用户（管理员功能）
+     *
+     * @param userUpdateRequest 更新请求
+     * @return 更新结果
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -139,6 +173,7 @@ public class UserController {
      * 分页获取用户封装列表（仅管理员）
      *
      * @param userQueryRequest 查询请求参数
+     * @return 用户封装列表
      */
     @PostMapping("/list/page/vo")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -153,6 +188,4 @@ public class UserController {
         userVOPage.setRecords(userVOList);
         return ResultUtils.success(userVOPage);
     }
-
-
 }

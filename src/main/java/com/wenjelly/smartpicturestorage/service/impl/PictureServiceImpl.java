@@ -460,13 +460,13 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
             ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
             // 释放额度
             Long spaceId = oldPicture.getSpaceId();
-            if(spaceId != null) {
+            if (spaceId != null) {
                 boolean update = spaceService.lambdaUpdate()
                         .eq(Space::getId, spaceId)
                         .setSql("totalSize = totalSize - " + oldPicture.getPicSize())
                         .setSql("totalCount = totalCount - 1")
                         .update();
-                ThrowUtils.throwIf(!update,ErrorCode.OPERATION_ERROR,"额度更新失败");
+                ThrowUtils.throwIf(!update, ErrorCode.OPERATION_ERROR, "额度更新失败");
             }
             return true;
         });

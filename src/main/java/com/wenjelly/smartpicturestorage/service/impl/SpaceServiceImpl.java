@@ -80,8 +80,6 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
             2）管理员可以为某个用户创建空间（目前没啥必要）
             3）本地锁改为分布式锁，可以基于 Redisson 实现。
          */
-
-
     }
 
     @Override
@@ -111,7 +109,6 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "空间名称过长");
         }
     }
-
     @Override
     public void fillSpaceBySpaceLevel(Space space) {
         // 如果空间本身没有设置限额，才会自动填充，保证了灵活性。
@@ -128,5 +125,4 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
             }
         }
     }
-
 }
