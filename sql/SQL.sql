@@ -1,5 +1,5 @@
 create
-    database if not exists smart_picture_storage_wenjelly default character set utf8mb4 collate utf8mb4_unicode_ci;
+    database if not exists storage_wenjelly default character set utf8mb4 collate utf8mb4_unicode_ci;
 
 use
     smart_picture_storage_wenjelly;
@@ -139,6 +139,10 @@ ALTER TABLE picture
 
 -- 创建索引
 CREATE INDEX idx_spaceId ON picture (spaceId);
+
+ALTER TABLE picture
+    ADD COLUMN picColor varchar(16) null comment '图片主色调';
+
 
 
 

@@ -47,7 +47,7 @@ public class CosManager {
     }
 
     /**
-     * 对图像进行处理后上传
+     * 对图像进行处理后调用putObject上传
      *
      * @param key  图片的唯一键
      * @param file 图片文件

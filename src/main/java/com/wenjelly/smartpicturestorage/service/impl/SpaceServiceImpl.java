@@ -109,6 +109,7 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "空间名称过长");
         }
     }
+
     @Override
     public void fillSpaceBySpaceLevel(Space space) {
         // 如果空间本身没有设置限额，才会自动填充，保证了灵活性。

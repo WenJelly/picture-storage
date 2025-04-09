@@ -10,6 +10,7 @@ import com.wenjelly.smartpicturestorage.model.dto.picture.*;
 import com.wenjelly.smartpicturestorage.model.vo.PictureVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author 14456
@@ -116,6 +117,27 @@ public interface PictureService extends IService<Picture> {
      * @param loginUser          登录用户
      */
     void editPicture(PictureEditRequest pictureEditRequest, User loginUser);
+
+    /**
+     * 根据图片主色调搜索图片
+     *
+     * @param spaceId   图片空间id
+     * @param picColor  图片主色调
+     * @param loginUser 登录用户
+     * @return 搜索完成的图片列表
+     */
+    List<PictureVO> searchPictureByColor(Long spaceId, String picColor, User loginUser);
+
+
+    /**
+     * 批量编辑图片
+     *
+     * @param pictureEditByBatchRequest 图片批量编辑请求
+     * @param loginUser                 登录用户
+     */
+    void editPictureByBatch(PictureEditByBatchRequest pictureEditByBatchRequest, User loginUser);
+
+    void batchEditPictureMetadata(PictureEditByBatchRequest pictureEditByBatchRequest, User loginUser);
 
 
 }
