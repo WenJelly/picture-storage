@@ -1,4 +1,4 @@
-package com.wenjelly.smartpicturestorage.model.vo;
+package com.wenjelly.smartpicturestorage.model.vo.space;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

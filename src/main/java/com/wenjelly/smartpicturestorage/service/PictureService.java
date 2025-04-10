@@ -8,7 +8,7 @@ import com.wenjelly.smartpicturestorage.api.aliyunai.model.CreateOutPaintingTask
 import com.wenjelly.smartpicturestorage.model.Picture;
 import com.wenjelly.smartpicturestorage.model.User;
 import com.wenjelly.smartpicturestorage.model.dto.picture.*;
-import com.wenjelly.smartpicturestorage.model.vo.PictureVO;
+import com.wenjelly.smartpicturestorage.model.vo.picutre.PictureVO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

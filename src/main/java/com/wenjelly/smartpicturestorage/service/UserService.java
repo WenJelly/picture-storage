@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wenjelly.smartpicturestorage.model.User;
 import com.wenjelly.smartpicturestorage.model.dto.user.UserQueryRequest;
-import com.wenjelly.smartpicturestorage.model.vo.LoginUserVO;
-import com.wenjelly.smartpicturestorage.model.vo.UserVO;
+import com.wenjelly.smartpicturestorage.model.vo.user.LoginUserVO;
+import com.wenjelly.smartpicturestorage.model.vo.user.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

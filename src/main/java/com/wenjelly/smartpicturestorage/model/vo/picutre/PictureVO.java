@@ -1,7 +1,8 @@
-package com.wenjelly.smartpicturestorage.model.vo;
+package com.wenjelly.smartpicturestorage.model.vo.picutre;
 
 import cn.hutool.json.JSONUtil;
 import com.wenjelly.smartpicturestorage.model.Picture;
+import com.wenjelly.smartpicturestorage.model.vo.user.UserVO;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

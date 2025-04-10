@@ -1,6 +1,7 @@
-package com.wenjelly.smartpicturestorage.model.vo;
+package com.wenjelly.smartpicturestorage.model.vo.space;
 
 import com.wenjelly.smartpicturestorage.model.Space;
+import com.wenjelly.smartpicturestorage.model.vo.user.UserVO;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

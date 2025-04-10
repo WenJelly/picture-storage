@@ -10,7 +10,7 @@ import com.wenjelly.smartpicturestorage.exception.ThrowUtils;
 import com.wenjelly.smartpicturestorage.model.Space;
 import com.wenjelly.smartpicturestorage.model.dto.space.SpaceUpdateRequest;
 import com.wenjelly.smartpicturestorage.model.enums.SpaceLevelEnum;
-import com.wenjelly.smartpicturestorage.model.vo.SpaceLevel;
+import com.wenjelly.smartpicturestorage.model.vo.space.SpaceLevel;
 import com.wenjelly.smartpicturestorage.service.SpaceService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;

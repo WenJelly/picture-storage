@@ -1,4 +1,4 @@
-package com.wenjelly.smartpicturestorage.model.vo;
+package com.wenjelly.smartpicturestorage.model.vo.picutre;
 
 import lombok.Data;
 
