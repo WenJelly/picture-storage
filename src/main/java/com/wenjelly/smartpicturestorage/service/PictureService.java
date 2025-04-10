@@ -4,6 +4,7 @@ package com.wenjelly.smartpicturestorage.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wenjelly.smartpicturestorage.api.aliyunai.model.CreateOutPaintingTaskResponse;
 import com.wenjelly.smartpicturestorage.model.Picture;
 import com.wenjelly.smartpicturestorage.model.User;
 import com.wenjelly.smartpicturestorage.model.dto.picture.*;
@@ -138,6 +139,15 @@ public interface PictureService extends IService<Picture> {
     void editPictureByBatch(PictureEditByBatchRequest pictureEditByBatchRequest, User loginUser);
 
     void batchEditPictureMetadata(PictureEditByBatchRequest pictureEditByBatchRequest, User loginUser);
+
+    /**
+     * AI 扩图
+     *
+     * @param createPictureOutPaintingTaskRequest 扩图请求
+     * @param loginUser                           登录用户
+     * @return 扩图任务响应
+     */
+    CreateOutPaintingTaskResponse createPictureOutPaintingTask(CreatePictureOutPaintingTaskRequest createPictureOutPaintingTaskRequest, User loginUser);
 
 
 }

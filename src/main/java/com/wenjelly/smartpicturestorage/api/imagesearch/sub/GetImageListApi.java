@@ -5,7 +5,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.wenjelly.smartpicturestorage.api.imagesearch.mode.ImageSearchResult;
+import com.wenjelly.smartpicturestorage.api.imagesearch.model.ImageSearchResult;
 import com.wenjelly.smartpicturestorage.common.ErrorCode;
 import com.wenjelly.smartpicturestorage.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;

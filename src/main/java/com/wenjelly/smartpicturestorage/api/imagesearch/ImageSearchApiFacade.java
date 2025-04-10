@@ -1,6 +1,6 @@
 package com.wenjelly.smartpicturestorage.api.imagesearch;
 
-import com.wenjelly.smartpicturestorage.api.imagesearch.mode.ImageSearchResult;
+import com.wenjelly.smartpicturestorage.api.imagesearch.model.ImageSearchResult;
 import com.wenjelly.smartpicturestorage.api.imagesearch.sub.GetImageFirstUrlApi;
 import com.wenjelly.smartpicturestorage.api.imagesearch.sub.GetImageListApi;
 import com.wenjelly.smartpicturestorage.api.imagesearch.sub.GetImagePageUrlApi;

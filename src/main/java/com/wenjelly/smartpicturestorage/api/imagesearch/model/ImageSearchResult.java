@@ -1,4 +1,4 @@
-package com.wenjelly.smartpicturestorage.api.imagesearch.mode;
+package com.wenjelly.smartpicturestorage.api.imagesearch.model;
 
 import lombok.Data;
 
