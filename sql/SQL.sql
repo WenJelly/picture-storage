@@ -1,8 +1,6 @@
-create
-    database if not exists smart_picture_storage_wenjelly default character set utf8mb4 collate utf8mb4_unicode_ci;
+create database if not exists smart_picture_storage_wenjelly default character set utf8mb4 collate utf8mb4_unicode_ci;
 
-use
-    smart_picture_storage_wenjelly;
+use smart_picture_storage_wenjelly;
 -- 用户表
 -- 扩展设计
 -- 1）如果要实现会员功能，可以对表进行如下扩展：
@@ -16,15 +14,8 @@ use
 -- 2.新增 inviteUser 字段，用于记录该用户被哪个用户邀请了，可通过这个字段查询某用户邀请的用户列表。
 create table if not exists user
 (
-    id
-                  bigint
-        auto_increment
-        comment
-            'id'
-        primary
-            key,
-    userAccount
-                  varchar(256)                           not null comment '账号',
+    id            bigint auto_increment comment 'id' primary key,
+    userAccount   varchar(256)                           not null comment '账号',
     userPassword  varchar(512)                           not null comment '密码',
     userName      varchar(256)                           null comment '用户昵称',
     userAvatar    varchar(1024)                          null comment '用户头像',
@@ -39,29 +30,16 @@ create table if not exists user
     shareCode     varchar(20)  DEFAULT NULL COMMENT '分享码',
     inviteUser    bigint       DEFAULT NULL COMMENT '邀请用户 id',
     isDelete      tinyint      default 0                 not null comment '是否删除',
-    UNIQUE KEY uk_userAccount
-        (
-         userAccount
-            ),
-    INDEX idx_userName
-        (
-         userName
-            )
+    UNIQUE KEY uk_userAccount (userAccount),
+    INDEX idx_userName (userName)
 ) comment '用户' collate = utf8mb4_unicode_ci;
 
 
 -- 图片表
 create table if not exists picture
 (
-    id
-                 bigint
-        auto_increment
-        comment
-            'id'
-        primary
-            key,
-    url
-                 varchar(512)                       not null comment '图片 url',
+    id           bigint auto_increment comment 'id' primary key,
+    url          varchar(512)                       not null comment '图片 url',
     name         varchar(128)                       not null comment '图片名称',
     introduction varchar(512)                       null comment '简介',
     category     varchar(64)                        null comment '分类',
@@ -162,9 +140,3 @@ create table if not exists space_user
     INDEX idx_spaceId (spaceId),                    -- 提升按空间查询的性能
     INDEX idx_userId (userId)                       -- 提升按用户查询的性能
 ) comment '空间用户关联' collate = utf8mb4_unicode_ci;
-
-
-
-
-
-

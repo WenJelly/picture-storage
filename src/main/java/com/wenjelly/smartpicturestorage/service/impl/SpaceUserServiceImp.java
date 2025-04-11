@@ -150,5 +150,4 @@ public class SpaceUserServiceImp extends ServiceImpl<SpaceUserMapper, SpaceUser>
         return spaceUserVOList;
     }
 
-
 }
