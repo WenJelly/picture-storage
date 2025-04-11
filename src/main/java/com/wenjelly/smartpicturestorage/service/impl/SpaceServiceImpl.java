@@ -1,21 +1,31 @@
 package com.wenjelly.smartpicturestorage.service.impl;
 
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wenjelly.smartpicturestorage.common.ErrorCode;
 import com.wenjelly.smartpicturestorage.exception.BusinessException;
 import com.wenjelly.smartpicturestorage.exception.ThrowUtils;
 import com.wenjelly.smartpicturestorage.mapper.SpaceMapper;
 import com.wenjelly.smartpicturestorage.model.Space;
+import com.wenjelly.smartpicturestorage.model.SpaceUser;
 import com.wenjelly.smartpicturestorage.model.User;
 import com.wenjelly.smartpicturestorage.model.dto.space.SpaceAddRequest;
+import com.wenjelly.smartpicturestorage.model.dto.space.SpaceQueryRequest;
 import com.wenjelly.smartpicturestorage.model.enums.SpaceLevelEnum;
+import com.wenjelly.smartpicturestorage.model.enums.SpaceRoleEnum;
+import com.wenjelly.smartpicturestorage.model.enums.SpaceTypeEnum;
+import com.wenjelly.smartpicturestorage.model.vo.space.SpaceVO;
+import com.wenjelly.smartpicturestorage.model.vo.user.UserVO;
 import com.wenjelly.smartpicturestorage.service.SpaceService;
+import com.wenjelly.smartpicturestorage.service.SpaceUserService;
 import com.wenjelly.smartpicturestorage.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +38,9 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
     @Resource
     private UserService userService;
 
+    @Resource
+    private SpaceUserService spaceUserService;
+
     @Override
     public long addSpace(SpaceAddRequest spaceAddRequest, User loginUser) {
         /*
@@ -35,16 +48,20 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
         在加锁的代码中，我们使用 Spring 的 编程式事务管理器 transactionTemplate 封装跟数据库有关的查询和插入操作，
         而不是使用 @Transactional 注解来控制事务，这样可以保证事务的提交在加锁的范围内。
          */
-        // 在此处进行实体类和DTO的转换
-        Space space = new Space();
-        BeanUtils.copyProperties(spaceAddRequest, space);
+
         // 默认值
         if (StrUtil.isBlank(spaceAddRequest.getSpaceName())) {
-            space.setSpaceName("默认空间");
+            spaceAddRequest.setSpaceName("默认空间");
         }
         if (spaceAddRequest.getSpaceLevel() == null) {
-            space.setSpaceLevel(SpaceLevelEnum.COMMON.getValue());
+            spaceAddRequest.setSpaceLevel(SpaceLevelEnum.COMMON.getValue());
         }
+        if (spaceAddRequest.getSpaceType() == null) {
+            spaceAddRequest.setSpaceType(SpaceTypeEnum.PRIVATE.getValue());
+        }
+        // 在此处将实体类和 DTO 进行转换
+        Space space = new Space();
+        BeanUtils.copyProperties(spaceAddRequest, space);
 
         // 填充数据
         this.fillSpaceBySpaceLevel(space);
@@ -63,11 +80,24 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
         Object lock = lockMap.computeIfAbsent(userId, key -> new Object());
         synchronized (lock) {
             Long newSpaceId = transactionTemplate.execute(status -> {
-                boolean exists = this.lambdaQuery().eq(Space::getUserId, userId).exists();
-                ThrowUtils.throwIf(exists, ErrorCode.OPERATION_ERROR, "每个用户仅能拥有一个私有空间");
+                if (!userService.isAdmin(loginUser)) {
+                    boolean exists = this.lambdaQuery().eq(Space::getUserId, userId)
+                            .eq(Space::getSpaceType, spaceAddRequest.getSpaceType())
+                            .exists();
+                    ThrowUtils.throwIf(exists, ErrorCode.OPERATION_ERROR, "每个用户每类空间仅能创建一个");
+                }
                 // 写入数据库
                 boolean result = this.save(space);
                 ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+                // 如果是团队空间，关联新增团队成员记录
+                if (SpaceTypeEnum.TEAM.getValue() == spaceAddRequest.getSpaceType()) {
+                    SpaceUser spaceUser = new SpaceUser();
+                    spaceUser.setSpaceId(space.getId());
+                    spaceUser.setUserId(userId);
+                    spaceUser.setSpaceRole(SpaceRoleEnum.ADMIN.getValue());
+                    result = spaceUserService.save(spaceUser);
+                    ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "创建团队成员记录失败");
+                }
                 // 返回新写入的数据 id
                 return space.getId();
             });
@@ -85,6 +115,8 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
     @Override
     public void validSpace(Space space, boolean add) {
         ThrowUtils.throwIf(space == null, ErrorCode.PARAMS_ERROR);
+        Integer spaceType = space.getSpaceType();
+        SpaceTypeEnum spaceTypeEnum = SpaceTypeEnum.getEnumByValue(spaceType);
         // 从对象中取值
         String spaceName = space.getSpaceName();
         Integer spaceLevel = space.getSpaceLevel();
@@ -98,6 +130,9 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
             if (spaceLevel == null) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "空间级别不能为空");
             }
+            if (spaceType == null) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "空间类型不能为空");
+            }
         }
 
         // 修改数据时，如果要改空间级别
@@ -107,6 +142,10 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
         // 如果是修改空间名称
         if (StrUtil.isNotBlank(spaceName) && spaceName.length() > 30) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "空间名称过长");
+        }
+        // 如果是修改空间类型
+        if (spaceType != null && spaceTypeEnum == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "空间类型不存在");
         }
     }
 
@@ -134,6 +173,40 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
         if (!space.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
+    }
+
+    @Override
+    public QueryWrapper<Space> getQueryWrapper(SpaceQueryRequest spaceQueryRequest) {
+
+        QueryWrapper<Space> queryWrapper = new QueryWrapper<>();
+
+        if (spaceQueryRequest == null) {
+            return queryWrapper;
+        }
+
+        Integer spaceType = spaceQueryRequest.getSpaceType();
+        String spaceName = spaceQueryRequest.getSpaceName();
+        Integer spaceLevel = spaceQueryRequest.getSpaceLevel();
+        Long id = spaceQueryRequest.getId();
+
+        queryWrapper.eq(ObjUtil.isNotEmpty(spaceType), "spaceType", spaceType);
+
+
+        return queryWrapper;
+    }
+
+    @Override
+    public SpaceVO getSpaceVO(Space space, HttpServletRequest request) {
+        // 对象转封装类
+        SpaceVO spaceVO = SpaceVO.objToVo(space);
+        // 关联查询用户信息
+        Long userId = space.getUserId();
+        if (userId != null && userId > 0) {
+            User user = userService.getById(userId);
+            UserVO userVO = userService.getUserVO(user);
+            spaceVO.setUser(userVO);
+        }
+        return spaceVO;
     }
 
 

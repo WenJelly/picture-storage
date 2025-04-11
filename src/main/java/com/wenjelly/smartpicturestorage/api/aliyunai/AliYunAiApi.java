@@ -1,5 +1,7 @@
 package com.wenjelly.smartpicturestorage.api.aliyunai;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.Month;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.Header;
@@ -27,6 +29,13 @@ public class AliYunAiApi {
     @Value("${aliYunAi.apiKey}")
     private String apiKey;
 
+    public static void main(String[] args) {
+        String zodiac = DateUtil.getZodiac(Month.SEPTEMBER.getValue(), 7);
+        System.out.println(zodiac);
+        String chineseZodiac = DateUtil.getChineseZodiac(2001);
+        System.out.println(chineseZodiac);
+    }
+
     /**
      * 创建任务
      *
@@ -37,6 +46,7 @@ public class AliYunAiApi {
         if (createOutPaintingTaskRequest == null) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "扩图参数为空");
         }
+
         // 发送请求
         HttpRequest httpRequest = HttpRequest.post(CREATE_OUT_PAINTING_TASK_URL)
                 .header(Header.AUTHORIZATION, "Bearer " + apiKey)
@@ -63,7 +73,7 @@ public class AliYunAiApi {
     /**
      * 查询创建的任务
      *
-     * @param taskId
+     * @param taskId 任务 id
      * @return
      */
     public GetOutPaintingTaskResponse getOutPaintingTask(String taskId) {
