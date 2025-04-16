@@ -59,10 +59,8 @@ public class PictureController {
     private PictureService pictureService;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-
     @Resource
     private SpaceService spaceService;
-
     @Resource
     private AliYunAiApi aliYunAiApi;
 
@@ -80,7 +78,9 @@ public class PictureController {
             @RequestParam("file") MultipartFile multipartFile,
             PictureUploadRequest pictureUploadRequest,
             HttpServletRequest request) {
+        // 获取登陆用户
         User loginUser = userService.getLoginUser(request);
+        // 调用图片上传服务
         PictureVO pictureVO = pictureService.uploadPicture(multipartFile, pictureUploadRequest, loginUser);
         return ResultUtils.success(pictureVO);
     }
@@ -107,7 +107,9 @@ public class PictureController {
      * 删除图片
      */
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deletePicture(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> deletePicture(
+            @RequestBody DeleteRequest deleteRequest,
+            HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -124,7 +126,9 @@ public class PictureController {
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> updatePicture(@RequestBody PictureUpdateRequest pictureUpdateRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> updatePicture(
+            @RequestBody PictureUpdateRequest pictureUpdateRequest,
+            HttpServletRequest request) {
         if (pictureUpdateRequest == null || pictureUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -186,7 +190,8 @@ public class PictureController {
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<Picture>> listPictureByPage(@RequestBody PictureQueryRequest pictureQueryRequest) {
+    public BaseResponse<Page<Picture>> listPictureByPage(
+            @RequestBody PictureQueryRequest pictureQueryRequest) {
         long current = pictureQueryRequest.getCurrent();
         long size = pictureQueryRequest.getPageSize();
         // 查询数据库
@@ -199,8 +204,9 @@ public class PictureController {
      * 分页获取图片列表（封装类）
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<PictureVO>> listPictureVOByPage(@RequestBody PictureQueryRequest pictureQueryRequest,
-                                                             HttpServletRequest request) {
+    public BaseResponse<Page<PictureVO>> listPictureVOByPage(
+            @RequestBody PictureQueryRequest pictureQueryRequest,
+            HttpServletRequest request) {
         long current = pictureQueryRequest.getCurrent();
         long size = pictureQueryRequest.getPageSize();
         Long spaceId = pictureQueryRequest.getSpaceId();
@@ -230,7 +236,9 @@ public class PictureController {
      * 编辑图片（给用户使用）
      */
     @PostMapping("/edit")
-    public BaseResponse<Boolean> editPicture(@RequestBody PictureEditRequest pictureEditRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> editPicture(
+            @RequestBody PictureEditRequest pictureEditRequest,
+            HttpServletRequest request) {
         if (pictureEditRequest == null || pictureEditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -272,8 +280,9 @@ public class PictureController {
 
     @PostMapping("/review")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> doPictureReview(@RequestBody PictureReviewRequest pictureReviewRequest,
-                                                 HttpServletRequest request) {
+    public BaseResponse<Boolean> doPictureReview(
+            @RequestBody PictureReviewRequest pictureReviewRequest,
+            HttpServletRequest request) {
         ThrowUtils.throwIf(pictureReviewRequest == null, ErrorCode.PARAMS_ERROR);
         User loginUser = userService.getLoginUser(request);
         pictureService.doPictureReview(pictureReviewRequest, loginUser);
@@ -288,8 +297,9 @@ public class PictureController {
      * @return 分页结果
      */
     @PostMapping("/list/page/vo/cache")
-    public BaseResponse<Page<PictureVO>> listPictureVOByPageWithCache(@RequestBody PictureQueryRequest pictureQueryRequest,
-                                                                      HttpServletRequest request) {
+    public BaseResponse<Page<PictureVO>> listPictureVOByPageWithCache(
+            @RequestBody PictureQueryRequest pictureQueryRequest,
+            HttpServletRequest request) {
         long current = pictureQueryRequest.getCurrent();
         long size = pictureQueryRequest.getPageSize();
 
@@ -367,7 +377,8 @@ public class PictureController {
      * 以图搜图
      */
     @PostMapping("/search/picture")
-    public BaseResponse<List<ImageSearchResult>> searchPictureByPicture(@RequestBody SearchPictureByPictureRequest searchPictureByPictureRequest) {
+    public BaseResponse<List<ImageSearchResult>> searchPictureByPicture(
+            @RequestBody SearchPictureByPictureRequest searchPictureByPictureRequest) {
         ThrowUtils.throwIf(searchPictureByPictureRequest == null, ErrorCode.PARAMS_ERROR);
         Long pictureId = searchPictureByPictureRequest.getPictureId();
         ThrowUtils.throwIf(pictureId == null || pictureId <= 0, ErrorCode.PARAMS_ERROR);
@@ -378,7 +389,9 @@ public class PictureController {
     }
 
     @PostMapping("/search/color")
-    public BaseResponse<List<PictureVO>> searchPictureByColor(@RequestBody SearchPictureByColorRequest searchPictureByColorRequest, HttpServletRequest request) {
+    public BaseResponse<List<PictureVO>> searchPictureByColor(
+            @RequestBody SearchPictureByColorRequest searchPictureByColorRequest,
+            HttpServletRequest request) {
         ThrowUtils.throwIf(searchPictureByColorRequest == null, ErrorCode.PARAMS_ERROR);
         String picColor = searchPictureByColorRequest.getPicColor();
         Long spaceId = searchPictureByColorRequest.getSpaceId();
@@ -388,7 +401,9 @@ public class PictureController {
     }
 
     @PostMapping("/edit/batch")
-    public BaseResponse<Boolean> editPictureByBatch(@RequestBody PictureEditByBatchRequest pictureEditByBatchRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> editPictureByBatch(
+            @RequestBody PictureEditByBatchRequest pictureEditByBatchRequest,
+            HttpServletRequest request) {
         ThrowUtils.throwIf(pictureEditByBatchRequest == null, ErrorCode.PARAMS_ERROR);
         User loginUser = userService.getLoginUser(request);
         pictureService.editPictureByBatch(pictureEditByBatchRequest, loginUser);
