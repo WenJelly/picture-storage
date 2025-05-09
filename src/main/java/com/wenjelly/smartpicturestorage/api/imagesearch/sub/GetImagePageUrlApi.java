@@ -1,5 +1,6 @@
 package com.wenjelly.smartpicturestorage.api.imagesearch.sub;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -15,7 +16,18 @@ import java.util.Map;
 
 @Slf4j
 public class GetImagePageUrlApi {
+    /**
+     * 获取以图搜图页面地址
+     *
+     * @param imageUrl
+     * @return
+     */
     public static String getImagePageUrl(String imageUrl) {
+        // image: https://picture-storage-1325426290.cos.ap-guangzhou.myqcloud.com/space/1920657534315270146/2025-05-09_7rkURadyzwJhdODGwebp
+        //tn: pc
+        //from: pc
+        //image_source: PC_UPLOAD_URL
+        //sdkParams:
         // 1. 准备请求参数
         Map<String, Object> formData = new HashMap<>();
         formData.put("image", imageUrl);
@@ -24,47 +36,46 @@ public class GetImagePageUrlApi {
         formData.put("image_source", "PC_UPLOAD_URL");
         // 获取当前时间戳
         long uptime = System.currentTimeMillis();
-        System.out.println(uptime);
         // 请求地址
         String url = "https://graph.baidu.com/upload?uptime=" + uptime;
-
+        String acsToken = "jmM4zyI8OUixvSuWh0sCy4xWbsttVMZb9qcRTmn6SuNWg0vCO7N0s6Lffec+IY5yuqHujHmCctF9BVCGYGH0H5SH/H3VPFUl4O4CP1jp8GoAzuslb8kkQQ4a21Tebge8yhviopaiK66K6hNKGPlWt78xyyJxTteFdXYLvoO6raqhz2yNv50vk4/41peIwba4lc0hzoxdHxo3OBerHP2rfHwLWdpjcI9xeu2nJlGPgKB42rYYVW50+AJ3tQEBEROlg/UNLNxY+6200B/s6Ryz+n7xUptHFHi4d8Vp8q7mJ26yms+44i8tyiFluaZAr66/+wW/KMzOhqhXCNgckoGPX1SSYwueWZtllIchRdsvCZQ8tFJymKDjCf3yI/Lw1oig9OKZCAEtiLTeKE9/CY+Crp8DHa8Tpvlk2/i825E3LuTF8EQfzjcGpVnR00Lb4/8A";
         try {
-            // 2. 发送 POST 请求到百度接口
-            HttpResponse response = HttpRequest.post(url)
+            // 2. 发送请求
+            HttpResponse httpResponse = HttpRequest.post(url)
                     .form(formData)
+                    .header("Acs-Token", acsToken)
                     .timeout(5000)
                     .execute();
-            // 判断响应状态
-            if (HttpStatus.HTTP_OK != response.getStatus()) {
+            if (httpResponse.getStatus() != HttpStatus.HTTP_OK) {
                 throw new BusinessException(ErrorCode.OPERATION_ERROR, "接口调用失败");
             }
             // 解析响应
-            String responseBody = response.body();
-            Map<String, Object> result = JSONUtil.toBean(responseBody, Map.class);
-            System.out.println(result.toString());
-
+            // {"status":0,"msg":"Success","data":{"url":"https://graph.baidu.com/sc","sign":"1262fe97cd54acd88139901734784257"}}
+            String body = httpResponse.body();
+            Map<String, Object> result = JSONUtil.toBean(body, Map.class);
             // 3. 处理响应结果
             if (result == null || !Integer.valueOf(0).equals(result.get("status"))) {
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "百度接口调用失败");
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "接口调用失败");
             }
             Map<String, Object> data = (Map<String, Object>) result.get("data");
-            String rawUrl = (String) data.get("url");
             // 对 URL 进行解码
+            String rawUrl = (String) data.get("url");
             String searchResultUrl = URLUtil.decode(rawUrl, StandardCharsets.UTF_8);
             // 如果 URL 为空
-            if (searchResultUrl == null) {
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "未返回有效结果");
+            if (StrUtil.isBlank(searchResultUrl)) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "未返回有效的结果地址");
             }
             return searchResultUrl;
         } catch (Exception e) {
-            log.error("搜索失败", e);
+            log.error("调用百度以图搜图接口失败", e);
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "搜索失败");
         }
     }
 
     public static void main(String[] args) {
+        // 测试以图搜图功能
         String imageUrl = "https://www.codefather.cn/logo.png";
-        String result = getImagePageUrl(imageUrl);
-        System.out.println(result);
+        String searchResultUrl = getImagePageUrl(imageUrl);
+        System.out.println("搜索成功，结果 URL：" + searchResultUrl);
     }
 }

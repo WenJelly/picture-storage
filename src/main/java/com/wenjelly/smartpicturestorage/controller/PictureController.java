@@ -354,6 +354,7 @@ public class PictureController {
         ThrowUtils.throwIf(pictureId == null || pictureId <= 0, ErrorCode.PARAMS_ERROR);
         Picture picture = pictureService.getById(pictureId);
         ThrowUtils.throwIf(picture == null, ErrorCode.NOT_FOUND_ERROR);
+        // https://picture-storage-1325426290.cos.ap-guangzhou.myqcloud.com/space/1920657534315270146/2025-05-09_7rkURadyzwJhdODGwebp
         List<ImageSearchResult> resultList = ImageSearchApiFacade.searchImage(picture.getUrl());
         return ResultUtils.success(resultList);
     }

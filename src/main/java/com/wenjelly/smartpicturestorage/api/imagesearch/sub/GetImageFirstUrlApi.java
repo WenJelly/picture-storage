@@ -15,6 +15,12 @@ import java.util.regex.Pattern;
 @Slf4j
 public class GetImageFirstUrlApi {
 
+    /**
+     * 获取图片列表页面地址
+     *
+     * @param url
+     * @return
+     */
     public static String getImageFirstUrl(String url) {
         try {
             // 使用 Jsoup 获取 HTML 内容
@@ -40,7 +46,6 @@ public class GetImageFirstUrlApi {
                     }
                 }
             }
-
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "未找到 url");
         } catch (Exception e) {
             log.error("搜索失败", e);

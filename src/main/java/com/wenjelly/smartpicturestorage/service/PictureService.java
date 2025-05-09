@@ -148,4 +148,6 @@ public interface PictureService extends IService<Picture> {
      * @param loginUser
      */
     CreateOutPaintingTaskResponse createPictureOutPaintingTask(CreatePictureOutPaintingTaskRequest createPictureOutPaintingTaskRequest, User loginUser);
+
+    // todo 获取首页轮播图 6张
 }
