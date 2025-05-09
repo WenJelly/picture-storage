@@ -1,7 +1,5 @@
 package com.wenjelly.smartpicturestorage.api.aliyunai;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.Month;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.Header;
@@ -28,13 +26,6 @@ public class AliYunAiApi {
     // 读取配置文件
     @Value("${aliYunAi.apiKey}")
     private String apiKey;
-
-    public static void main(String[] args) {
-        String zodiac = DateUtil.getZodiac(Month.SEPTEMBER.getValue(), 7);
-        System.out.println(zodiac);
-        String chineseZodiac = DateUtil.getChineseZodiac(2001);
-        System.out.println(chineseZodiac);
-    }
 
     /**
      * 创建任务

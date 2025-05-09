@@ -16,6 +16,8 @@ import com.wenjelly.smartpicturestorage.service.PictureService;
 import com.wenjelly.smartpicturestorage.service.SpaceAnalyzeService;
 import com.wenjelly.smartpicturestorage.service.SpaceService;
 import com.wenjelly.smartpicturestorage.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.LinkedHashMap;
@@ -23,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SpaceAnalyzeServiceImp implements SpaceAnalyzeService {
+@Service
+@Slf4j
+public class SpaceAnalyzeServiceImpl implements SpaceAnalyzeService {
 
     @Resource
     private UserService userService;

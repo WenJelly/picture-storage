@@ -81,7 +81,8 @@ public class CosManager {
         // 构造处理参数
         picOperations.setRules(rules);
         putObjectRequest.setPicOperations(picOperations);
-        return cosClient.putObject(putObjectRequest);
+        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+        return putObjectResult;
     }
 
     /**

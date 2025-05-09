@@ -5,15 +5,16 @@
 <mapper namespace="com.wenjelly.smartpicturestorage.mapper.SpaceUserMapper">
 
     <resultMap id="BaseResultMap" type="com.wenjelly.smartpicturestorage.model.SpaceUser">
-        <id property="id" column="id"/>
-        <result property="spaceId" column="spaceId"/>
-        <result property="userId" column="userId"/>
-        <result property="spaceRole" column="spaceRole"/>
-        <result property="createTime" column="createTime"/>
-        <result property="updateTime" column="updateTime"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="spaceId" column="spaceId" jdbcType="BIGINT"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="spaceRole" column="spaceRole" jdbcType="VARCHAR"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,spaceId,userId,spaceRole,createTime,updateTime
+        id,spaceId,userId,
+        spaceRole,createTime,updateTime
     </sql>
 </mapper>

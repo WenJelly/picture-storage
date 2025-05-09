@@ -21,7 +21,10 @@ import com.wenjelly.smartpicturestorage.model.vo.user.UserVO;
 import com.wenjelly.smartpicturestorage.service.SpaceService;
 import com.wenjelly.smartpicturestorage.service.SpaceUserService;
 import com.wenjelly.smartpicturestorage.service.UserService;
+import groovy.lang.Lazy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -31,14 +34,30 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SpaceUserServiceImp extends ServiceImpl<SpaceUserMapper, SpaceUser>
+@Service
+@Slf4j
+public class SpaceUserServiceImpl extends ServiceImpl<SpaceUserMapper, SpaceUser>
         implements SpaceUserService {
 
     @Resource
-    private SpaceService spaceService;
+    private UserService userService;
 
     @Resource
-    private UserService userService;
+    @Lazy
+    private SpaceService spaceService;
+
+    @Override
+    public long addSpaceUser(SpaceUserAddRequest spaceUserAddRequest) {
+        // 参数校验
+        ThrowUtils.throwIf(spaceUserAddRequest == null, ErrorCode.PARAMS_ERROR);
+        SpaceUser spaceUser = new SpaceUser();
+        BeanUtils.copyProperties(spaceUserAddRequest, spaceUser);
+        validSpaceUser(spaceUser, true);
+        // 数据库操作
+        boolean result = this.save(spaceUser);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return spaceUser.getId();
+    }
 
     @Override
     public void validSpaceUser(SpaceUser spaceUser, boolean add) {
@@ -59,38 +78,6 @@ public class SpaceUserServiceImp extends ServiceImpl<SpaceUserMapper, SpaceUser>
         if (spaceRole != null && spaceRoleEnum == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "空间角色不存在");
         }
-    }
-
-
-    @Override
-    public long addSpaceUser(SpaceUserAddRequest spaceUserAddRequest) {
-        // 参数校验
-        ThrowUtils.throwIf(spaceUserAddRequest == null, ErrorCode.PARAMS_ERROR);
-        SpaceUser spaceUser = new SpaceUser();
-        BeanUtils.copyProperties(spaceUserAddRequest, spaceUser);
-        validSpaceUser(spaceUser, true);
-        // 数据库操作
-        boolean result = this.save(spaceUser);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return spaceUser.getId();
-    }
-
-    @Override
-    public QueryWrapper<SpaceUser> getQueryWrapper(SpaceUserQueryRequest spaceUserQueryRequest) {
-        QueryWrapper<SpaceUser> queryWrapper = new QueryWrapper<>();
-        if (spaceUserQueryRequest == null) {
-            return queryWrapper;
-        }
-        // 从对象中取值
-        Long id = spaceUserQueryRequest.getId();
-        Long spaceId = spaceUserQueryRequest.getSpaceId();
-        Long userId = spaceUserQueryRequest.getUserId();
-        String spaceRole = spaceUserQueryRequest.getSpaceRole();
-        queryWrapper.eq(ObjUtil.isNotEmpty(id), "id", id);
-        queryWrapper.eq(ObjUtil.isNotEmpty(spaceId), "spaceId", spaceId);
-        queryWrapper.eq(ObjUtil.isNotEmpty(userId), "userId", userId);
-        queryWrapper.eq(ObjUtil.isNotEmpty(spaceRole), "spaceRole", spaceRole);
-        return queryWrapper;
     }
 
     @Override
@@ -150,4 +137,21 @@ public class SpaceUserServiceImp extends ServiceImpl<SpaceUserMapper, SpaceUser>
         return spaceUserVOList;
     }
 
+    @Override
+    public QueryWrapper<SpaceUser> getQueryWrapper(SpaceUserQueryRequest spaceUserQueryRequest) {
+        QueryWrapper<SpaceUser> queryWrapper = new QueryWrapper<>();
+        if (spaceUserQueryRequest == null) {
+            return queryWrapper;
+        }
+        // 从对象中取值
+        Long id = spaceUserQueryRequest.getId();
+        Long spaceId = spaceUserQueryRequest.getSpaceId();
+        Long userId = spaceUserQueryRequest.getUserId();
+        String spaceRole = spaceUserQueryRequest.getSpaceRole();
+        queryWrapper.eq(ObjUtil.isNotEmpty(id), "id", id);
+        queryWrapper.eq(ObjUtil.isNotEmpty(spaceId), "spaceId", spaceId);
+        queryWrapper.eq(ObjUtil.isNotEmpty(userId), "userId", userId);
+        queryWrapper.eq(ObjUtil.isNotEmpty(spaceRole), "spaceRole", spaceRole);
+        return queryWrapper;
+    }
 }

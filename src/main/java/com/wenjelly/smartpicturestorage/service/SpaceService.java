@@ -1,6 +1,7 @@
 package com.wenjelly.smartpicturestorage.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wenjelly.smartpicturestorage.model.Space;
 import com.wenjelly.smartpicturestorage.model.User;
@@ -23,7 +24,15 @@ public interface SpaceService extends IService<Space> {
     long addSpace(SpaceAddRequest spaceAddRequest, User loginUser);
 
     /**
-     * 新增空间，或用于编辑空间，用add参加进行操作判断
+     * 删除空间
+     *
+     * @param spaceId   空间id
+     * @param loginUser 登录用户
+     */
+    void deleteSpace(long spaceId, User loginUser);
+
+    /**
+     * 校验对操作空间的合法性，通过add判断是新增还是编辑操作
      *
      * @param space 空间
      * @param add   是否新增
@@ -61,4 +70,13 @@ public interface SpaceService extends IService<Space> {
      * @return SpaceVO
      */
     SpaceVO getSpaceVO(Space space, HttpServletRequest request);
+
+    /**
+     * 分页获取空间封装
+     *
+     * @param spacePage 分页
+     * @param request   请求
+     * @return
+     */
+    Page<SpaceVO> getSpaceVOPage(Page<Space> spacePage, HttpServletRequest request);
 }

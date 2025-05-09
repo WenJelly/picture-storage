@@ -1,4 +1,4 @@
-package com.wenjelly.smartpicturestorage.auth.model;
+package com.wenjelly.smartpicturestorage.manager.auth.model;
 
 public interface SpaceUserPermissionConstant {
     /**

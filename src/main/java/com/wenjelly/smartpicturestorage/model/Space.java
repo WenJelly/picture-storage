@@ -9,6 +9,7 @@ import java.util.Date;
 @TableName(value = "space")
 @Data
 public class Space implements Serializable {
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
     /**
@@ -61,7 +62,6 @@ public class Space implements Serializable {
      */
     @TableLogic
     private Integer isDelete;
-
     /**
      * 空间类型：0-私有 1-团队
      */

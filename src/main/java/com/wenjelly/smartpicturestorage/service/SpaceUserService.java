@@ -13,43 +13,43 @@ import java.util.List;
 public interface SpaceUserService extends IService<SpaceUser> {
 
     /**
-     * 校验空间成员
+     * 创建空间成员
      *
-     * @param spaceUser 空间成员
-     * @param add       是否添加
-     */
-    void validSpaceUser(SpaceUser spaceUser, boolean add);
-
-    /**
-     * 添加空间成员
-     *
-     * @param spaceUserAddRequest 空间成员添加请求
-     * @return 空间成员 id
+     * @param spaceUserAddRequest
+     * @return
      */
     long addSpaceUser(SpaceUserAddRequest spaceUserAddRequest);
 
     /**
-     * 查询空间成员封装
+     * 校验空间成员
      *
-     * @param spaceUserQueryRequest 空间成员查询请求
-     * @return QueryWrapper<SpaceUser>
+     * @param spaceUser
+     * @param add       是否为创建时检验
      */
-    QueryWrapper<SpaceUser> getQueryWrapper(SpaceUserQueryRequest spaceUserQueryRequest);
+    void validSpaceUser(SpaceUser spaceUser, boolean add);
 
     /**
-     * 查询空间成员列表
+     * 获取空间成员包装类（单条）
      *
-     * @param spaceUser 空间成员
-     * @param request   请求
-     * @return List<SpaceUserVO>
+     * @param spaceUser
+     * @param request
+     * @return
      */
     SpaceUserVO getSpaceUserVO(SpaceUser spaceUser, HttpServletRequest request);
 
     /**
-     * 查询空间成员列表
+     * 获取空间成员包装类（列表）
      *
-     * @param spaceUserList 空间成员列表
-     * @return List<SpaceUserVO>
+     * @param spaceUserList
+     * @return
      */
     List<SpaceUserVO> getSpaceUserVOList(List<SpaceUser> spaceUserList);
+
+    /**
+     * 获取查询对象
+     *
+     * @param spaceUserQueryRequest
+     * @return
+     */
+    QueryWrapper<SpaceUser> getQueryWrapper(SpaceUserQueryRequest spaceUserQueryRequest);
 }

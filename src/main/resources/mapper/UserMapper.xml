@@ -21,12 +21,16 @@
         <result property="shareCode" column="shareCode"/>
         <result property="inviteUser" column="inviteUser"/>
         <result property="isDelete" column="isDelete"/>
+        <result property="vipExpireTime" column="vipExpireTime" jdbcType="TIMESTAMP"/>
+        <result property="vipCode" column="vipCode" jdbcType="VARCHAR"/>
+        <result property="vipNumber" column="vipNumber" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id
-        ,userAccount,userPassword,userName,userAvatar,userProfile,
-        userRole,editTime,createTime,updateTime,vipExpireTime,
-        vipCode,vipNumber,shareCode,inviteUser,isDelete
+        id,userAccount,userPassword,
+        userName,userAvatar,userProfile,
+        userRole,editTime,createTime,
+        updateTime,isDelete,vipExpireTime,
+        vipCode,vipNumber
     </sql>
 </mapper>
