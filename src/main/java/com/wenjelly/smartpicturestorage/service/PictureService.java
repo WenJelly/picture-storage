@@ -149,5 +149,6 @@ public interface PictureService extends IService<Picture> {
      */
     CreateOutPaintingTaskResponse createPictureOutPaintingTask(CreatePictureOutPaintingTaskRequest createPictureOutPaintingTaskRequest, User loginUser);
 
-    // todo 获取首页轮播图 6张
+    // 获取首页轮播图
+    List<PictureVO> getHomePageBanner();
 }

@@ -107,4 +107,14 @@ public class Picture implements Serializable {
      */
     private String picColor;
 
+    /**
+     * 图片访问次数
+     */
+    private Long viewCount;
+
+    /**
+     * 图片点赞数
+     */
+    private Long likeCount;
+
 }

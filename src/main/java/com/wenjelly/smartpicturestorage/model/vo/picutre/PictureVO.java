@@ -97,6 +97,16 @@ public class PictureVO implements Serializable {
     private List<String> permissionList = new ArrayList<>();
 
     /**
+     * 图片访问次数
+     */
+    private Long viewCount;
+
+    /**
+     * 图片点赞数
+     */
+    private Long likeCount;
+
+    /**
      * 封装类转对象
      */
     public static Picture voToObj(PictureVO pictureVO) {

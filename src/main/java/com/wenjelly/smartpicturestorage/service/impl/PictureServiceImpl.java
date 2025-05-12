@@ -220,6 +220,12 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
 
     @Override
     public PictureVO getPictureVO(Picture picture, HttpServletRequest request) {
+
+        // 图片访问次数+1
+        if (picture != null) {
+            picture.setViewCount(picture.getViewCount() + 1);
+            this.updateById(picture);
+        }
         // 对象转封装类
         PictureVO pictureVO = PictureVO.objToVo(picture);
         // 关联查询用户信息
@@ -608,7 +614,9 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
     }
 
     @Override
-    public CreateOutPaintingTaskResponse createPictureOutPaintingTask(CreatePictureOutPaintingTaskRequest createPictureOutPaintingTaskRequest, User loginUser) {
+    public CreateOutPaintingTaskResponse createPictureOutPaintingTask(
+            CreatePictureOutPaintingTaskRequest createPictureOutPaintingTaskRequest,
+            User loginUser) {
         // 获取图片信息
         Long pictureId = createPictureOutPaintingTaskRequest.getPictureId();
         Picture picture = Optional.ofNullable(this.getById(pictureId))
@@ -623,6 +631,17 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         createOutPaintingTaskRequest.setParameters(createPictureOutPaintingTaskRequest.getParameters());
         // 创建任务
         return aliYunAiApi.createOutPaintingTask(createOutPaintingTaskRequest);
+    }
+
+    @Override
+    public List<PictureVO> getHomePageBanner() {
+        List<Picture> pictureList = this.lambdaQuery()
+                .isNull(Picture::getSpaceId) // 仅公共图库
+                .orderByDesc(Picture::getViewCount)
+                .last("limit 6")
+                .list();
+        return pictureList.stream().map(PictureVO::objToVo)
+                .collect(Collectors.toList());
     }
 
     /**

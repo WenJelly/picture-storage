@@ -179,9 +179,6 @@ public class PictureController {
         if (spaceId != null) {
             boolean hasPermission = StpKit.SPACE.hasPermission(SpaceUserPermissionConstant.PICTURE_VIEW);
             ThrowUtils.throwIf(!hasPermission, ErrorCode.NO_AUTH_ERROR);
-            // 已经改为使用注解鉴权
-            // User loginUser = userService.getLoginUser(request);
-            // pictureService.checkPictureAuth(loginUser, picture);
             space = spaceService.getById(spaceId);
             ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR, "空间不存在");
         }
@@ -408,5 +405,15 @@ public class PictureController {
         ThrowUtils.throwIf(StrUtil.isBlank(taskId), ErrorCode.PARAMS_ERROR);
         GetOutPaintingTaskResponse task = aliYunAiApi.getOutPaintingTask(taskId);
         return ResultUtils.success(task);
+    }
+
+    /**
+     * 获取首页轮播图
+     */
+    @GetMapping("/home/carousel")
+    public BaseResponse<List<PictureVO>> getHomeCarousel() {
+        // 获取轮播图
+        List<PictureVO> pictureVOList = pictureService.getHomePageBanner();
+        return ResultUtils.success(pictureVOList);
     }
 }
