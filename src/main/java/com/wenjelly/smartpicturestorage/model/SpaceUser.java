@@ -10,13 +10,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 空间用户关联
- *
- * @TableName space_user
+ * 空间用户关联实体类
+ * TableName: space_user
  */
 @TableName(value = "space_user")
 @Data
 public class SpaceUser implements Serializable {
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
     /**

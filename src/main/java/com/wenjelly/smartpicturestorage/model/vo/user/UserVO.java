@@ -7,8 +7,8 @@ import java.util.Date;
 
 /**
  * @author wenjelly
- * @date 2025 2025/2/12 上午9:53
- * @description UserVO
+ * date: 2025 2025/2/12 上午9:53
+ * description: UserVO
  */
 @Data
 public class UserVO implements Serializable {

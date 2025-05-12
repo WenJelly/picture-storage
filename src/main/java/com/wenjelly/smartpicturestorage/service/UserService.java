@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * @author 14456
- * @description 针对表【user(用户)】的数据库操作Service
- * @createDate 2025-02-11 15:33:27
+ * @author wenguodong
+ * description:  针对表【user(用户)】的数据库操作Service
+ * createDate:  2025-02-11 15:33:27
  */
 public interface UserService extends IService<User> {
 
@@ -33,7 +33,7 @@ public interface UserService extends IService<User> {
      *
      * @param userAccount  用户账户
      * @param userPassword 用户密码
-     * @param request      请求
+     * @param request      http请求
      * @return 脱敏后的用户信息
      */
     LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
@@ -41,7 +41,7 @@ public interface UserService extends IService<User> {
     /**
      * 获取当前登录用户
      *
-     * @param request 请求
+     * @param request http请求
      * @return 当前登录用户
      */
     User getLoginUser(HttpServletRequest request);
@@ -49,7 +49,7 @@ public interface UserService extends IService<User> {
     /**
      * 用户注销
      *
-     * @param request 请求
+     * @param request http请求
      * @return 是否注销成功
      */
     boolean userLogout(HttpServletRequest request);
@@ -104,6 +104,10 @@ public interface UserService extends IService<User> {
 
     /**
      * 用户兑换会员（会员码兑换）
+     *
+     * @param user    用户
+     * @param vipCode 会员码
+     * @return 是否兑换成功
      */
     boolean exchangeVip(User user, String vipCode);
 

@@ -15,10 +15,10 @@ public interface SpaceService extends IService<Space> {
 
 
     /**
-     * 添加/编辑空间
+     * 创建空间
      *
-     * @param spaceAddRequest 空间添加请求
-     * @param loginUser       登录用户
+     * @param spaceAddRequest 空间创建请求封装类
+     * @param loginUser       目前登录的用户
      * @return 空间 id
      */
     long addSpace(SpaceAddRequest spaceAddRequest, User loginUser);
@@ -27,14 +27,14 @@ public interface SpaceService extends IService<Space> {
      * 删除空间
      *
      * @param spaceId   空间id
-     * @param loginUser 登录用户
+     * @param loginUser 目前登录的用户
      */
     void deleteSpace(long spaceId, User loginUser);
 
     /**
      * 校验对操作空间的合法性，通过add判断是新增还是编辑操作
      *
-     * @param space 空间
+     * @param space 空间信息
      * @param add   是否新增
      */
     void validSpace(Space space, boolean add);
@@ -42,7 +42,7 @@ public interface SpaceService extends IService<Space> {
     /**
      * 根据空间级别自动填充数据
      *
-     * @param space 空间
+     * @param space 空间信息
      */
     void fillSpaceBySpaceLevel(Space space);
 
@@ -57,7 +57,7 @@ public interface SpaceService extends IService<Space> {
     /**
      * 空间查询条件构造器
      *
-     * @param spaceQueryRequest 空间查询请求
+     * @param spaceQueryRequest 空间查询请求封装类
      * @return 查询结果
      */
     QueryWrapper<Space> getQueryWrapper(SpaceQueryRequest spaceQueryRequest);
@@ -65,8 +65,8 @@ public interface SpaceService extends IService<Space> {
     /**
      * VO封装
      *
-     * @param space   空间
-     * @param request 请求
+     * @param space   空间信息
+     * @param request http请求
      * @return SpaceVO
      */
     SpaceVO getSpaceVO(Space space, HttpServletRequest request);
@@ -74,9 +74,9 @@ public interface SpaceService extends IService<Space> {
     /**
      * 分页获取空间封装
      *
-     * @param spacePage 分页
-     * @param request   请求
-     * @return
+     * @param spacePage 分页封装类
+     * @param request   http请求
+     * @return 分页查询结果
      */
     Page<SpaceVO> getSpaceVOPage(Page<Space> spacePage, HttpServletRequest request);
 }

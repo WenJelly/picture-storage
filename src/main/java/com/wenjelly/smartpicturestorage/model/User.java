@@ -7,9 +7,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 用户
- *
- * @TableName user
+ * 用户表实体类
+ * TableName: user
  */
 @TableName(value = "user")
 @Data

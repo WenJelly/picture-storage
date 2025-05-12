@@ -31,13 +31,17 @@ public class SpaceAnalyzeServiceImpl implements SpaceAnalyzeService {
 
     @Resource
     private UserService userService;
-
     @Resource
     private SpaceService spaceService;
-
     @Resource
     private PictureService pictureService;
 
+    /**
+     * 根据分析范围补充查询条件
+     *
+     * @param spaceAnalyzeRequest 空间分析请求封装类
+     * @param queryWrapper        查询条件构造器
+     */
     private static void fillAnalyzeQueryWrapper(SpaceAnalyzeRequest spaceAnalyzeRequest, QueryWrapper<Picture> queryWrapper) {
         if (spaceAnalyzeRequest.isQueryAll()) {
             return;
@@ -54,6 +58,12 @@ public class SpaceAnalyzeServiceImpl implements SpaceAnalyzeService {
         throw new BusinessException(ErrorCode.PARAMS_ERROR, "未指定查询范围");
     }
 
+    /**
+     * 检查当前用户是否有分析空间的权限
+     *
+     * @param spaceAnalyzeRequest 空间分析请求封装类
+     * @param loginUser           当前登录用户
+     */
     private void checkSpaceAnalyzeAuth(SpaceAnalyzeRequest spaceAnalyzeRequest, User loginUser) {
         // 检查权限
         if (spaceAnalyzeRequest.isQueryAll() || spaceAnalyzeRequest.isQueryPublic()) {

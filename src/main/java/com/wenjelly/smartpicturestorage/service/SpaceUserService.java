@@ -13,17 +13,17 @@ import java.util.List;
 public interface SpaceUserService extends IService<SpaceUser> {
 
     /**
-     * 创建空间成员
+     * 新增空间成员
      *
-     * @param spaceUserAddRequest
-     * @return
+     * @param spaceUserAddRequest 新增成员请求封装类
+     * @return 新成员 id
      */
     long addSpaceUser(SpaceUserAddRequest spaceUserAddRequest);
 
     /**
      * 校验空间成员
      *
-     * @param spaceUser
+     * @param spaceUser 空间成员
      * @param add       是否为创建时检验
      */
     void validSpaceUser(SpaceUser spaceUser, boolean add);
@@ -31,25 +31,25 @@ public interface SpaceUserService extends IService<SpaceUser> {
     /**
      * 获取空间成员包装类（单条）
      *
-     * @param spaceUser
-     * @param request
-     * @return
+     * @param spaceUser 空间成员
+     * @param request   http请求
+     * @return 空间成员包装类
      */
     SpaceUserVO getSpaceUserVO(SpaceUser spaceUser, HttpServletRequest request);
 
     /**
      * 获取空间成员包装类（列表）
      *
-     * @param spaceUserList
-     * @return
+     * @param spaceUserList 空间成员列表
+     * @return 空间成员包装类列表
      */
     List<SpaceUserVO> getSpaceUserVOList(List<SpaceUser> spaceUserList);
 
     /**
      * 获取查询对象
      *
-     * @param spaceUserQueryRequest
-     * @return
+     * @param spaceUserQueryRequest 查询请求封装类
+     * @return 查询对象
      */
     QueryWrapper<SpaceUser> getQueryWrapper(SpaceUserQueryRequest spaceUserQueryRequest);
 }

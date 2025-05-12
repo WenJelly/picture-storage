@@ -22,7 +22,6 @@ import com.wenjelly.smartpicturestorage.model.vo.user.UserVO;
 import com.wenjelly.smartpicturestorage.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -41,30 +40,22 @@ import static com.wenjelly.smartpicturestorage.constant.UserConstant.USER_LOGIN_
 
 /**
  * @author 14456
- * @description 针对表【user(用户)】的数据库操作Service实现
- * @createDate 2025-02-11 15:33:27
+ * description: 针对表【user(用户)】的数据库操作Service实现
+ * createDate: 2025-02-11 15:33:27
  */
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
-    // VIP 角色常量（根据你的需求自定义）
+    // VIP 角色常量（根据需求自定义）
     private static final String VIP_ROLE = "vip";
     // 文件读写锁（确保并发安全）
     private final ReentrantLock fileLock = new ReentrantLock();
     // 新增依赖注入
-    @Autowired
+    @javax.annotation.Resource
     private ResourceLoader resourceLoader;
 
-    /**
-     * 用户注册
-     *
-     * @param userAccount   用户账户
-     * @param userPassword  用户密码
-     * @param checkPassword 校验密码
-     * @return 新用户id
-     */
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1.校验
@@ -233,13 +224,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     // region ------- 以下代码为用户兑换会员功能 --------
 
-    /**
-     * 兑换会员
-     *
-     * @param user
-     * @param vipCode
-     * @return
-     */
     @Override
     public boolean exchangeVip(User user, String vipCode) {
         // 1. 参数校验
@@ -255,6 +239,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 校验兑换码并标记为已使用
+     *
+     * @param vipCode 兑换码
+     * @return 兑换码对象
      */
     private VipCode validateAndMarkVipCode(String vipCode) {
         fileLock.lock(); // 加锁保证文件操作原子性
@@ -282,6 +269,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 读取兑换码文件
+     *
+     * @return 兑换码列表
      */
     private JSONArray readVipCodeFile() {
         try {
@@ -296,6 +285,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 写入兑换码文件
+     *
+     * @param jsonArray 兑换码列表
      */
     private void writeVipCodeFile(JSONArray jsonArray) {
         try {
@@ -309,6 +300,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 更新用户会员信息
+     *
+     * @param user        用户信息
+     * @param usedVipCode 使用的兑换码
      */
     private void updateUserVipInfo(User user, String usedVipCode) {
         // 计算过期时间（当前时间 + 1 年）
