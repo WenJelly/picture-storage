@@ -5,8 +5,8 @@ import lombok.Getter;
 
 /**
  * @author wenjelly
- * @date 2025 2025/2/18 上午10:29
- * @description PictureReviewStatusEnum
+ * date 2025 2025/2/18 上午10:29
+ * description PictureReviewStatusEnum
  */
 @Getter
 public enum PictureReviewStatusEnum {

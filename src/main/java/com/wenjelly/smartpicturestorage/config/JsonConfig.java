@@ -1,11 +1,5 @@
 package com.wenjelly.smartpicturestorage.config;
 
-/**
- * @author wenjelly
- * @date 2025 2025/2/12 上午10:03
- * @description JsonConfig
- */
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -13,7 +7,11 @@ import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+
 /**
+ * @author wenjelly
+ * date 2025 2025/2/12 上午10:03
+ * description JsonConfig
  * Spring MVC Json 配置
  */
 @JsonComponent

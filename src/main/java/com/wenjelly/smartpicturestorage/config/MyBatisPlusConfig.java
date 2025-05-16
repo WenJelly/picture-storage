@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author wenjelly
- * @date 2025 2025/2/12 上午10:03
- * @description MyBatisPlusConfig
+ * date 2025 2025/2/12 上午10:03
+ * description MyBatisPlusConfig
  */
 @Configuration
 @MapperScan("com.wenjelly.smartpicturestorage.mapper")
