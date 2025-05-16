@@ -63,7 +63,6 @@ public class DynamicShardingManager {
      */
     private void updateShardingTableNodes() {
         Set<String> tableNames = fetchAllPictureTableNames();
-        // yu_picture.picture_112321321,yu_picture.picture_1123213123
         String newActualDataNodes = tableNames.stream()
                 .map(tableName -> "yu_picture." + tableName) // 确保前缀合法
                 .collect(Collectors.joining(","));
