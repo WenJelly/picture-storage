@@ -32,14 +32,12 @@ public class GetOutPaintingTaskResponse {
 
         /**
          * 任务状态
-         * <ul>
-         *     <li>PENDING：排队中</li>
-         *     <li>RUNNING：处理中</li>
-         *     <li>SUSPENDED：挂起</li>
-         *     <li>SUCCEEDED：执行成功</li>
-         *     <li>FAILED：执行失败</li>
-         *     <li>UNKNOWN：任务不存在或状态未知</li>
-         * </ul>
+         * PENDING：排队中
+         * RUNNING：处理中
+         * SUSPENDED：挂起
+         * SUCCEEDED：执行成功
+         * FAILED：执行失败
+         * UNKNOWN：任务不存在或状态未知
          */
         private String taskStatus;
 
@@ -68,13 +66,13 @@ public class GetOutPaintingTaskResponse {
 
         /**
          * 接口错误码
-         * <p>接口成功请求不会返回该参数</p>
+         * 接口成功请求不会返回该参数
          */
         private String code;
 
         /**
          * 接口错误信息
-         * <p>接口成功请求不会返回该参数</p>
+         * 接口成功请求不会返回该参数
          */
         private String message;
 

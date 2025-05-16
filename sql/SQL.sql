@@ -122,3 +122,6 @@ create table if not exists space_user
 ALTER TABLE picture
     ADD COLUMN viewCount bigint default 0 not null comment '浏览次数',
     ADD COLUMN likeCount bigint default 0 not null comment '点赞次数';
+
+ALTER TABLE picture
+    ADD COLUMN info varchar(512) comment '图片内物体类别及其坐标';

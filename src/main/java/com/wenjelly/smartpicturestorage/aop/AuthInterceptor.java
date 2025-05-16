@@ -19,11 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author wenjelly
- * @date 2025 2025/2/12 上午9:44
- * @description AuthInterceptor
- */
-
-/**
+ * date 2025 2025/2/12 上午9:44
+ * description AuthInterceptor
  * 只要给方法添加了 @AuthCheck 注解，就必须要登录，否则会抛出异常。
  * 可以设置 mustRole 为管理员，这样仅管理员才能使用该接口：
  * 例如：@AuthCheck(mustRole = UserConstant.ADMIN_ROLE)

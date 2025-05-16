@@ -2,8 +2,8 @@ package com.wenjelly.smartpicturestorage.constant;
 
 /**
  * @author wenjelly
- * @date 2025 2025/2/12 上午9:05
- * @description UserConstant
+ * date 2025 2025/2/12 上午9:05
+ * description UserConstant
  */
 public interface UserConstant {
 

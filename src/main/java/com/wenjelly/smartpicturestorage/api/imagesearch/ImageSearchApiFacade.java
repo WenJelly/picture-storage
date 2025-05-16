@@ -24,7 +24,7 @@ public class ImageSearchApiFacade {
     }
 
     public static void main(String[] args) {
-        List<ImageSearchResult> imageList = searchImage("https://www.codefather.cn/logo.png");
+        List<ImageSearchResult> imageList = searchImage("https://picture-storage-1325426290.cos.ap-guangzhou.myqcloud.com/public/1921565781396983809/2025-05-11_pKyEbTKtiajX7vTiwebp");
         System.out.println("结果列表" + imageList);
     }
 }

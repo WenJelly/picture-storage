@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * @author wenjelly
- * @date 2025 2025/2/12 上午9:43
- * @description AuthCheck
+ * date 2025 2025/2/12 上午9:43
+ * description AuthCheck
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

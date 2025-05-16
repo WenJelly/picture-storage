@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class GetImageFirstUrlApi {
-
     /**
      * 获取图片列表页面地址
      *
